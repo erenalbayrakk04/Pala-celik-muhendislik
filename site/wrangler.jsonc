@@ -15,8 +15,10 @@
     // /hakkimizda.html dosyası /hakkimizda adresinde açılsın (sonunda "/" olmadan)
     "html_handling": "drop-trailing-slash"
   },
-  // Cloudflare'in verdiği ücretsiz önizleme adresi (…workers.dev) açık kalsın
-  "workers_dev": true,
+  // Site palacelikmuhendislik.com'da yayında (alan adı Cloudflare panelinden bağlandı:
+  // Workers → pala-celik-muhendislik → Domains). Geçici …workers.dev adresi kapalı,
+  // böylece site Google'da tek adreste görünür.
+  "workers_dev": false,
   // Her sürüm için ayrı önizleme adresi açılmasın (tek dal kullanıyoruz)
   "preview_urls": false
 }
