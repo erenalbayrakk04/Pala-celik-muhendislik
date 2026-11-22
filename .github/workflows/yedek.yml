@@ -1,0 +1,67 @@
+# Haftalık içerik yedeği
+#
+# Her pazartesi sabah panelin bütün içeriğini (yazılar + fotoğraflar) tek bir dosya olarak indirir
+# ve bu deponun "Releases" bölümüne koyar. Son 12 yedek (yaklaşık 3 ay) saklanır.
+#
+# Elle çalıştırmak için: GitHub → Actions → "Haftalık içerik yedeği" → Run workflow
+#
+# Geri yüklemek için (panel klasöründe, bir yedek dosyasını indirdikten sonra):
+#   npx sanity datasets import pala-yedek-TARIH.tar.gz production --replace
+#
+# Gerekli gizli anahtar: SANITY_YEDEK_TOKEN (Sanity'de "viewer" yetkili okuma anahtarı)
+name: Haftalık içerik yedeği
+
+on:
+  schedule:
+    - cron: '0 3 * * 1' # her pazartesi 03:00 UTC = 06:00 Türkiye
+  workflow_dispatch:
+
+permissions:
+  contents: write # yedeği Releases'a koyabilmek için
+
+concurrency:
+  group: icerik-yedegi
+  cancel-in-progress: false
+
+jobs:
+  yedekle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: panel/package-lock.json
+
+      - name: Panel paketlerini kur
+        working-directory: panel
+        run: npm ci --no-audit --no-fund
+
+      - name: İçeriği dışa aktar
+        working-directory: panel
+        env:
+          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_YEDEK_TOKEN }}
+        run: |
+          TARIH=$(date -u +%F)
+          echo "TARIH=$TARIH" >> "$GITHUB_ENV"
+          npx sanity datasets export production "../pala-yedek-$TARIH.tar.gz" --overwrite
+          ls -lh "../pala-yedek-$TARIH.tar.gz"
+
+      - name: Yedeği Releases'a koy ve eskileri sil
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ETIKET="yedek-$TARIH"
+          # Aynı gün ikinci kez çalışırsa eskisinin yerine koy
+          gh release delete "$ETIKET" --yes --cleanup-tag 2>/dev/null || true
+          gh release create "$ETIKET" "pala-yedek-$TARIH.tar.gz" \
+            --title "İçerik yedeği $TARIH" \
+            --notes "Panelin $TARIH tarihli tam yedeği (yazılar ve fotoğraflar). Geri yükleme: .github/workflows/yedek.yml içindeki açıklamaya bakın." \
+            --latest=false
+          # Son 12 yedek kalsın
+          gh release list --limit 200 --json tagName --jq '.[].tagName' \
+            | grep '^yedek-' | sort -r | tail -n +13 \
+            | xargs -r -I{} gh release delete {} --yes --cleanup-tag

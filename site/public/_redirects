@@ -1,0 +1,5 @@
+# Cloudflare yönlendirmeleri
+# Abinin paneli: palacelikmuhendislik.com/admin → Sanity paneli
+/admin    https://palacelikmuhendislik.sanity.studio  302
+/admin/*  https://palacelikmuhendislik.sanity.studio  302
+/panel    https://palacelikmuhendislik.sanity.studio  302
