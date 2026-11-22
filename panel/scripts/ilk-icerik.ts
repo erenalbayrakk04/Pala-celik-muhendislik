@@ -158,7 +158,7 @@ const isler = [
 // ---------- Tek sayfalar ----------
 const hakkimizda = [
   p(
-    "Pala Çelik & Mühendislik, İstanbul Sarıyer'de çelik yapı ve çelik imalat alanında hizmet veren bir firmadır. Çelik çatı, uzay çatı, çelik konstrüksiyon ev, asma tavan ve bölme duvar uygulamalarından projeye özel çelik imalata kadar işleri projeden montaja tek elden yürütüyoruz.",
+    "Pala Çelik & Mühendislik, İstanbul Sarıyer'de çelik yapı ve çelik imalat alanında hizmet veren bir firmadır. Çelik çatı, uzay çatı, çelik konstrüksiyon ev, asma tavan ve bölme duvar uygulamalarından projeye özel çelik imalata kadar işleri atölyeden şantiyeye tek elden yürütüyoruz.",
   ),
   p(
     'Bunun yanında film ve video sektörü için yüksek kaliteli ve çok fonksiyonlu prodüksiyon ekipmanları üretiyoruz: kamera arabaları, kamera platformları, kıskaçlar ve bağlantı aparatları.',
@@ -187,7 +187,7 @@ async function main() {
     adres: 'Huzur Mah. Ulubaş Cad. Ulubaş Pasajı\nNo: 11 Kat: 1 Daire: 40\nSarıyer / İstanbul',
     instagram: 'https://www.instagram.com/pala.1933/',
     tanitim:
-      'Çelik çatı, uzay çatı, çelik konstrüksiyon ve projeye özel çelik imalatta projeden montaja tek elden hizmet. Film ve video sektörü için prodüksiyon ekipmanları.',
+      'Çelik çatı, uzay çatı, çelik konstrüksiyon ve projeye özel çelik imalatta atölyeden şantiyeye tek elden hizmet. Film ve video sektörü için prodüksiyon ekipmanları.',
   })
   islem.createIfNotExists({_id: 'hakkimizda', _type: 'sayfa', baslik: 'Hakkımızda', icerik: hakkimizda})
   islem.createIfNotExists({_id: 'kvkk', _type: 'sayfa', baslik: 'KVKK Aydınlatma Metni', icerik: kvkk})

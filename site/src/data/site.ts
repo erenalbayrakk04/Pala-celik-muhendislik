@@ -10,7 +10,7 @@ const VARSAYILAN = {
   adres: 'Huzur Mah. Ulubaş Cad. Ulubaş Pasajı\nNo: 11 Kat: 1 Daire: 40\nSarıyer / İstanbul',
   instagram: 'https://www.instagram.com/pala.1933/',
   tanitim:
-    'Çelik çatı, uzay çatı, çelik konstrüksiyon ve projeye özel çelik imalatta projeden montaja tek elden hizmet. Film ve video sektörü için prodüksiyon ekipmanları.',
+    'Çelik çatı, uzay çatı, çelik konstrüksiyon ve projeye özel çelik imalatta atölyeden şantiyeye tek elden hizmet. Film ve video sektörü için prodüksiyon ekipmanları.',
 };
 
 const dolu = (deger: string | undefined, yedek: string) => (deger?.trim() ? deger.trim() : yedek);
