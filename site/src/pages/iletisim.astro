@@ -9,7 +9,8 @@ import YerelIsletme from '../components/YerelIsletme.astro';
 import { firma, whatsappLink } from '../data/site';
 
 const adres = firma.adresSatirlari.join(', ');
-const haritaGomme = `https://maps.google.com/maps?q=${encodeURIComponent(`${firma.ad}, ${adres}`)}&z=16&output=embed`;
+// Haritada firma adı değil sade adres aranıyor (firma adıyla Google yanlış semte gidiyordu)
+const haritaGomme = `https://maps.google.com/maps?q=${encodeURIComponent(firma.haritaSorgusu)}&z=17&output=embed`;
 
 const kartlar = [
   {

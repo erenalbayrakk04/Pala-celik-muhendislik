@@ -29,6 +29,32 @@ const adresSatirlari = dolu(ayarlar.adres, VARSAYILAN.adres)
   .split('\n')
   .map((s) => s.trim())
   .filter(Boolean);
+/**
+ * Google Haritalar'ın doğru yeri bulabileceği sade adres.
+ * Firma adı, kat/daire/pasaj gibi bina içi bilgiler ve "Mah./Cad." kısaltmaları Google'ı şaşırtıp
+ * yanlış semte götürüyordu (ör. Çengelköy). Sitede görünen adres değişmez; sadece haritaya giden arama.
+ * "Huzur Mah. Ulubaş Cad. Ulubaş Pasajı / No: 11 Kat: 1 Daire: 40 / Sarıyer / İstanbul"
+ *   → "Huzur Mahallesi, Ulubaş Caddesi No: 11, Sarıyer, İstanbul"
+ */
+function haritaAdresi(satirlar: string[]) {
+  return satirlar
+    .join(' ')
+    .replace(/\b(Kat|Daire|D)\s*:?\s*\d+\w*/gi, ' ') // bina içi bilgiler
+    .replace(/\S+\s+(Pasajı|İş Merkezi|İş Hanı|Apartmanı|Apt\.?|Sitesi)(?=\s|,|$)/giu, ' ')
+    .replace(/\bMah\.?(?=\s)/gi, 'Mahallesi,')
+    .replace(/\bCad\.?(?=\s)/gi, 'Caddesi')
+    .replace(/\bSok\.?(?=\s)|\bSk\.?(?=\s)/gi, 'Sokak')
+    .replace(/\bBulv?\.?(?=\s)|\bBlv\.?(?=\s)/gi, 'Bulvarı')
+    .replace(/\s*\/\s*/g, ', ')
+    .replace(/\s+(Sarıyer|Beşiktaş|Şişli|Kağıthane|Eyüpsultan)\b/g, ', $1')
+    .replace(/\s+,/g, ',')
+    .replace(/,\s*,/g, ',')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
+    .replace(/^,|,$/g, '');
+}
+const haritaSorgusu = haritaAdresi(adresSatirlari);
+
 const instagramLink = dolu(ayarlar.instagram, VARSAYILAN.instagram);
 const instagramKullanici = instagramLink.match(/instagram\.com\/([^/?#]+)/i)?.[1] ?? 'pala.1933';
 
@@ -40,9 +66,11 @@ export const firma = {
   whatsappNumara: ulkeKodlu(dolu(ayarlar.whatsapp, telefon)),
   eposta: dolu(ayarlar.eposta, VARSAYILAN.eposta),
   adresSatirlari,
+  /** Haritada aranacak sade adres (iletişim sayfasındaki harita için) */
+  haritaSorgusu,
   haritaLinki: dolu(
     ayarlar.haritaLinki,
-    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(adresSatirlari.join(' '))}`,
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(haritaSorgusu)}`,
   ),
   instagram: { kullanici: instagramKullanici, link: instagramLink },
   tanitim: dolu(ayarlar.tanitim, VARSAYILAN.tanitim),
