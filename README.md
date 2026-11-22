@@ -29,8 +29,12 @@ cd site && npm install && npm run dev     # site:  http://localhost:4321
 cd panel && npm install && npm run dev    # panel: http://localhost:3333
 ```
 
-## Hesaplar
+## Hesaplar ve adresler
 
-- Panel / Sanity: firmanın Google hesabıyla giriş (proje `lnnbnu19`)
-- Panel adresi: https://palacelikmuhendislik.sanity.studio
-- Kod: bu depo (GitHub, gizli)
+- Site: https://palacelikmuhendislik.com (www ve http buraya yönlenir)
+- Panel: https://palacelikmuhendislik.com/admin → https://palacelikmuhendislik.sanity.studio
+- Sanity: firmanın Google hesabıyla giriş (proje `lnnbnu19`)
+- Cloudflare (firma hesabı): domain (Cloudflare Registrar, otomatik yenileme açık),
+  Worker `pala-celik-muhendislik` (her `main` gönderiminde ve panelden yayında derlenir),
+  www → kök yönlendirme kuralı, Always Use HTTPS
+- Kod: bu depo (GitHub, gizli). Haftalık içerik yedekleri: bu deponun Releases bölümü
