@@ -8,3 +8,7 @@
 # Derlemede adı değişen dosyalar (görseller, stiller): tarayıcı 1 yıl saklayabilir
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Abinin panel kılavuzu: Google listelemesin
+/kilavuz
+  X-Robots-Tag: noindex, nofollow

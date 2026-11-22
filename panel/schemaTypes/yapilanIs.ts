@@ -3,7 +3,7 @@ import {ImagesIcon} from '@sanity/icons/Images'
 import {turkceSlug} from './turkceSlug'
 
 // Yapılan işler (referanslar). Abin en çok bunu kullanacak:
-// başlık yazar, bölüm seçer, fotoğrafları yükler, "Yayınla"ya basar.
+// başlık yazar, bölüm seçer, fotoğrafları yükler, "Yayımla"ya basar.
 export const yapilanIs = defineType({
   name: 'yapilanIs',
   title: 'Yapılan İş',
@@ -79,7 +79,7 @@ export const yapilanIs = defineType({
       name: 'slug',
       title: 'Sayfa adresi',
       type: 'slug',
-      description: 'Boş bırakırsanız "Yayınla"ya basınca başlıktan otomatik oluşturulur.',
+      description: 'Boş bırakırsanız "Yayımla"ya basınca başlıktan otomatik oluşturulur.',
       options: {source: 'baslik', slugify: turkceSlug},
     }),
   ],

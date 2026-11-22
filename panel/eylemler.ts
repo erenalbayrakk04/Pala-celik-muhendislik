@@ -5,8 +5,8 @@ import {turkceSlug} from './schemaTypes/turkceSlug'
 type Taslak = {baslik?: string; slug?: {current?: string}}
 
 /**
- * "Yayınla" butonunu sarar: sayfa adresi (slug) boşsa önce başlıktan oluşturur, sonra yayınlar.
- * Böylece abin sadece başlık yazıp "Yayınla"ya basabilir.
+ * "Yayımla" butonunu sarar: sayfa adresi (slug) boşsa önce başlıktan oluşturur, sonra yayınlar.
+ * Böylece abin sadece başlık yazıp "Yayımla"ya basabilir.
  * Aynı adres başka bir belgede varsa sonuna kısa bir ek koyar (ör. celik-cati-a1b2).
  */
 export function slugluYayinla(orijinal: DocumentActionComponent): DocumentActionComponent {
@@ -25,7 +25,7 @@ export function slugluYayinla(orijinal: DocumentActionComponent): DocumentAction
 
     return {
       ...varsayilan,
-      label: yayinlaniyor ? 'Yayınlanıyor…' : varsayilan.label,
+      label: yayinlaniyor ? 'Yayımlanıyor…' : varsayilan.label,
       onHandle: async () => {
         const taslak = props.draft as Taslak | null
         if (!taslak?.baslik || taslak.slug?.current) {

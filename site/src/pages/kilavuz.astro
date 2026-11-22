@@ -1,0 +1,442 @@
+---
+// /kilavuz: Fatih abi için panel kullanım kılavuzu.
+// Sitede bu sayfaya bağlantı yok, Google'a da "listeleme" deniyor (noindex + site haritasında yok).
+// Ekran görüntüleri: src/assets/kilavuz/ (panelin telefon görünümü).
+import '@fontsource/barlow/400.css';
+import '@fontsource/barlow/500.css';
+import '@fontsource/barlow/600.css';
+import '@fontsource/barlow-condensed/600.css';
+import '@fontsource/barlow-condensed/700.css';
+import '../styles/global.css';
+import { Image } from 'astro:assets';
+import Logo from '../assets/logo/pala-logo.svg';
+import { firma } from '../data/site';
+
+import giris from '../assets/kilavuz/giris.png';
+import anaMenu from '../assets/kilavuz/ana-menu.png';
+import islerListesi from '../assets/kilavuz/isler-listesi.png';
+import yeniBaslik from '../assets/kilavuz/yeni-baslik.png';
+import bolumSecimi from '../assets/kilavuz/bolum-secimi.png';
+import kapak from '../assets/kilavuz/kapak.png';
+import digerFotograflar from '../assets/kilavuz/diger-fotograflar.png';
+import detaylar from '../assets/kilavuz/detaylar.png';
+import yayimla from '../assets/kilavuz/yayimla.png';
+import silMenu from '../assets/kilavuz/sil-menu.png';
+import hizmetlerListesi from '../assets/kilavuz/hizmetler-listesi.png';
+import hizmetFormu from '../assets/kilavuz/hizmet-formu.png';
+import siteAyarlari from '../assets/kilavuz/site-ayarlari.png';
+import hakkimizda from '../assets/kilavuz/hakkimizda.png';
+
+const panel = '/admin';
+const bolumler = [
+  { id: 'giris', ad: 'Panele giriş' },
+  { id: 'yeni-is', ad: 'Yeni iş eklemek' },
+  { id: 'duzelt-sil', ad: 'Bir işi düzeltmek veya silmek' },
+  { id: 'yeni-bolum', ad: 'Yeni bölüm (hizmet) eklemek' },
+  { id: 'iletisim', ad: 'Telefon, adres, e-posta' },
+  { id: 'yazilar', ad: 'Hakkımızda ve KVKK yazıları' },
+  { id: 'bilinmesi', ad: 'Bilmeniz gerekenler' },
+];
+const gorsel = { widths: [390, 780], sizes: '(max-width: 420px) 88vw, 380px' };
+---
+
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Panel Kullanım Kılavuzu | {firma.ad}</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#131316" />
+  </head>
+  <body>
+    <header class="ust">
+      <div class="kap">
+        <a href="/" class="ust__logo" aria-label={`${firma.ad} – Anasayfa`}><Logo aria-hidden="true" /></a>
+        <p class="eyebrow">Sadece sizin için</p>
+        <h1>Panel Kullanım Kılavuzu</h1>
+        <p class="ust__aciklama">
+          Siteye yeni iş, fotoğraf ve bölüm eklemek; telefon ya da adresi değiştirmek için kısa rehber. Hepsi telefondan
+          yapılabilir.
+        </p>
+        <a class="btn btn--primary" href={panel} target="_blank" rel="noopener">Paneli aç</a>
+      </div>
+    </header>
+
+    <main class="kap">
+      <nav class="icindekiler" aria-label="İçindekiler">
+        <p>İçindekiler</p>
+        <ol>
+          {bolumler.map((b) => <li><a href={`#${b.id}`}>{b.ad}</a></li>)}
+        </ol>
+      </nav>
+
+      <!-- 1 -->
+      <section id="giris">
+        <h2><span>1</span>Panele giriş</h2>
+        <ol class="adimlar">
+          <li>
+            <p>
+              Telefonda <a href={panel} target="_blank" rel="noopener"><strong>palacelikmuhendislik.com/admin</strong></a>{' '}
+              adresini açın.
+            </p>
+          </li>
+          <li>
+            <p>
+              <strong>Continue with Google</strong>'a basın ve firmanın Google hesabını seçin. (Sadece bu giriş ekranı
+              İngilizce; panelin kendisi Türkçe.)
+            </p>
+            <figure><Image src={giris} alt="Giriş ekranı: Continue with Google düğmesi" {...gorsel} /></figure>
+          </li>
+        </ol>
+        <div class="ipucu">
+          <strong>Kolay erişim:</strong> Paneli telefonunuzun ana ekranına uygulama gibi ekleyebilirsiniz.
+          <br /><b>Android (Chrome):</b> sağ üstteki ⋮ → <em>Ana ekrana ekle</em>.
+          <br /><b>iPhone (Safari):</b> alttaki paylaş düğmesi (kare ve yukarı ok) → <em>Ana Ekrana Ekle</em>.
+        </div>
+        <p class="not">
+          Panel Sanity'nin sayfasında açılır; ekranın kenarında Sanity'nin kendi menüsü de görünebilir. Ona dokunmanıza gerek
+          yok, her şey "İçerik" menüsünde.
+        </p>
+      </section>
+
+      <!-- 2 -->
+      <section id="yeni-is">
+        <h2><span>2</span>Yeni iş eklemek</h2>
+        <p class="giris-yazi">En çok kullanacağınız bölüm bu. Bir işi eklemek 2-3 dakika sürer.</p>
+        <ol class="adimlar">
+          <li>
+            <p>Menüden <strong>Yapılan İşler</strong>'e dokunun.</p>
+            <figure><Image src={anaMenu} alt="Panelin ana menüsü, Yapılan İşler işaretli" {...gorsel} /></figure>
+          </li>
+          <li>
+            <p>Sağ üstteki <strong>+</strong> işaretine dokunun.</p>
+            <figure><Image src={islerListesi} alt="Yapılan İşler listesi, sağ üstte artı düğmesi" {...gorsel} /></figure>
+          </li>
+          <li>
+            <p><strong>Başlık</strong> yazın. Örnek: "Sarıyer depo çelik çatı".</p>
+            <figure><Image src={yeniBaslik} alt="Yeni iş formu, Başlık alanı dolu" {...gorsel} /></figure>
+          </li>
+          <li>
+            <p>
+              <strong>Bölüm</strong> kutusuna yazmaya başlayın (ör. "Çelik") ve listeden işin bölümünü seçin.
+            </p>
+            <figure><Image src={bolumSecimi} alt="Bölüm seçimi: yazınca açılan bölüm listesi" {...gorsel} /></figure>
+          </li>
+          <li>
+            <p>
+              <strong>Kapak fotoğrafı</strong>nda <strong>Yükle</strong>'ye dokunun ve galeriden ya da kameradan fotoğraf
+              seçin. Listelerde bu fotoğraf görünür, en iyisini seçin.
+            </p>
+            <figure><Image src={kapak} alt="Kapak fotoğrafı alanı: Yükle ve Seç düğmeleri" {...gorsel} /></figure>
+          </li>
+          <li>
+            <p>
+              Başka fotoğraflar da varsa <strong>Diğer fotoğraflar</strong> → <strong>Öğe ekle</strong> → Yükle. Birden
+              fazla fotoğrafı aynı anda seçebilirsiniz.
+            </p>
+            <figure><Image src={digerFotograflar} alt="Diğer fotoğraflar alanı ve Öğe ekle düğmesi" {...gorsel} /></figure>
+          </li>
+          <li>
+            <p>
+              İsterseniz <strong>Açıklama</strong>, <strong>Konum</strong>, <strong>Tarih</strong> ve{' '}
+              <strong>Video bağlantısı</strong> (Instagram linki) ekleyin. <strong>Anasayfada göster</strong> açık kalırsa
+              iş anasayfadaki "Son işlerimiz" bölümünde de çıkar.
+            </p>
+            <figure><Image src={detaylar} alt="Konum, Tarih, Video bağlantısı ve Anasayfada göster alanları" {...gorsel} /></figure>
+          </li>
+          <li>
+            <p>En alttaki <strong>Yayımla</strong>'ya basın. Bir-iki dakika içinde iş sitede görünür.</p>
+            <figure><Image src={yayimla} alt="Alt çubukta Yayımla düğmesi" {...gorsel} /></figure>
+          </li>
+        </ol>
+        <div class="ipucu">
+          <strong>Zorunlu alanlar:</strong> Başlık, Bölüm ve Kapak fotoğrafı. Yanında kırmızı <b>!</b> olan alan boşsa
+          Yayımla düğmesi basılmaz. <strong>Sayfa adresi</strong> alanına dokunmanıza gerek yok, kendiliğinden oluşur.
+        </div>
+      </section>
+
+      <!-- 3 -->
+      <section id="duzelt-sil">
+        <h2><span>3</span>Bir işi düzeltmek veya silmek</h2>
+        <p>
+          <strong>Düzeltmek:</strong> Yapılan İşler'den işe dokunun, istediğinizi değiştirin, <strong>Yayımla</strong>'ya
+          basın.
+        </p>
+        <p>
+          <strong>Silmek:</strong> İşi açın, en alttaki Yayımla'nın yanındaki <strong>⋯</strong> düğmesine dokunun,{' '}
+          <strong>Sil</strong>'i seçin ve onaylayın. İş bir-iki dakika içinde siteden de kalkar.
+        </p>
+        <figure><Image src={silMenu} alt="Alt çubuktaki menü açık, Sil seçeneği işaretli" {...gorsel} /></figure>
+      </section>
+
+      <!-- 4 -->
+      <section id="yeni-bolum">
+        <h2><span>4</span>Yeni bölüm (hizmet) eklemek</h2>
+        <p>
+          Sitedeki "Hizmetlerimiz" kartları ve işlerin bölümleri buradan gelir. Yeni bir iş kolu eklemek isterseniz:
+        </p>
+        <ol class="adimlar">
+          <li>
+            <p>Menüden <strong>Hizmetler (Bölümler)</strong>'e girin ve sağ üstteki <strong>+</strong>'ya dokunun.</p>
+            <figure><Image src={hizmetlerListesi} alt="Hizmetler listesi, sağ üstte artı düğmesi" {...gorsel} /></figure>
+          </li>
+          <li>
+            <p>
+              <strong>Başlık</strong>, <strong>Kısa açıklama</strong> (kartta görünen 1-2 cümle) ve <strong>İkon</strong>{' '}
+              (listeden en yakın çizim) doldurun. İsterseniz kapak fotoğrafı ve uzun açıklama da ekleyin.
+            </p>
+            <figure><Image src={hizmetFormu} alt="Hizmet formu: Başlık, Kısa açıklama, İkon" {...gorsel} /></figure>
+          </li>
+          <li>
+            <p>
+              <strong>Sıra</strong>: Sitede hangi sırada çıkacağı. Mevcut bölümler 10, 20, 30 … 80 diye gidiyor; ikisinin
+              arasına koymak için ör. 15 yazın.
+            </p>
+          </li>
+          <li>
+            <p>
+              <strong>Yayımla</strong>'ya basın. Bölüm sitede kendi sayfasıyla çıkar; yeni iş eklerken de artık bu bölümü
+              seçebilirsiniz.
+            </p>
+          </li>
+        </ol>
+      </section>
+
+      <!-- 5 -->
+      <section id="iletisim">
+        <h2><span>5</span>Telefon, adres, e-posta</h2>
+        <p>
+          Menüden <strong>Site Ayarları</strong>'na girin, değiştirip <strong>Yayımla</strong>'ya basın. Bilgi sitenin her
+          yerinde (üst menü, alt bilgi, İletişim sayfası, WhatsApp düğmesi) birden güncellenir. WhatsApp numarası telefondan
+          farklıysa ayrı alana yazın.
+        </p>
+        <figure><Image src={siteAyarlari} alt="Site Ayarları: yetkili kişi, telefon, WhatsApp, e-posta, adres" {...gorsel} /></figure>
+      </section>
+
+      <!-- 6 -->
+      <section id="yazilar">
+        <h2><span>6</span>Hakkımızda ve KVKK yazıları</h2>
+        <p>
+          Menüden <strong>Hakkımızda</strong> (ya da <strong>KVKK Aydınlatma Metni</strong>) açın ve yazıyı normal bir metin
+          gibi düzenleyin. Başlık, kalın yazı ve madde işareti için üstteki araç çubuğunu kullanabilirsiniz. Bitince{' '}
+          <strong>Yayımla</strong>.
+        </p>
+        <figure><Image src={hakkimizda} alt="Hakkımızda yazısını düzenleme alanı" {...gorsel} /></figure>
+      </section>
+
+      <!-- 7 -->
+      <section id="bilinmesi">
+        <h2><span>7</span>Bilmeniz gerekenler</h2>
+        <ul class="maddeler">
+          <li>
+            Siz yazarken her şey kendiliğinden kaydedilir ("Kaydedildi"), ama <strong>sitede görünmesi için mutlaka
+            Yayımla'ya basın</strong>. Üstte sarı <strong>Taslak</strong> yazıyorsa yayımlanmamış bir değişiklik var
+            demektir.
+          </li>
+          <li>Yayımla'dan sonra site 1-2 dakikada güncellenir. Eski hâlini görüyorsanız sayfayı yenileyin.</li>
+          <li>
+            <strong>Fotoğraf:</strong> İşin bitmiş hâlini, gün ışığında ve mümkünse yatay çekin. Telefonun çektiği
+            fotoğrafı olduğu gibi yükleyin; site kendisi küçültür.
+          </li>
+          <li>
+            Müşterinin izni olmadan fotoğrafta ya da açıklamada müşteri adı, açık adres veya araç plakası gibi kişisel
+            bilgiler olmasın.
+          </li>
+          <li>
+            İçerik her hafta otomatik yedekleniyor. Yanlışlıkla bir şey silerseniz telaş etmeyin, geri getirilebilir.
+          </li>
+          <li>
+            <strong>info@palacelikmuhendislik.com</strong> adresine gelen mailler firmanın Gmail hesabına düşer.
+          </li>
+          <li>
+            Bir şey ters giderse ya da emin olamazsanız ekran görüntüsü alıp siteyi kuran kişiye WhatsApp'tan gönderin.
+          </li>
+        </ul>
+        <a class="btn btn--dark" href={panel} target="_blank" rel="noopener">Paneli aç</a>
+      </section>
+    </main>
+
+    <footer class="alt">
+      <div class="kap">© {new Date().getFullYear()} {firma.ad}</div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .kap {
+    width: min(100% - 2.5rem, 44rem);
+    margin-inline: auto;
+  }
+
+  .ust {
+    padding-block: 2rem 2.5rem;
+    background: var(--ink);
+    color: var(--white);
+  }
+  .ust .kap {
+    display: grid;
+    justify-items: start;
+    gap: 0.9rem;
+  }
+  .ust__logo :global(svg) {
+    width: 6.5rem;
+    height: auto;
+    color: var(--white);
+  }
+  .ust .eyebrow {
+    margin-top: 0.75rem;
+    color: var(--spark);
+  }
+  h1 {
+    font-size: clamp(2.4rem, 9vw, 3.4rem);
+  }
+  .ust__aciklama {
+    color: var(--steel-300);
+    font-size: 1.1rem;
+  }
+
+  main {
+    display: grid;
+    gap: 3rem;
+    padding-block: 2rem 4rem;
+  }
+
+  .icindekiler {
+    padding: 1.25rem 1.4rem;
+    border: 1px solid var(--steel-100);
+    border-radius: var(--radius);
+    background: var(--paper);
+  }
+  .icindekiler p {
+    margin-bottom: 0.5rem;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 1.3rem;
+  }
+  .icindekiler ol {
+    display: grid;
+    gap: 0.35rem;
+    margin: 0;
+    padding-left: 1.3rem;
+  }
+  .icindekiler a {
+    color: var(--spark-ink);
+    font-weight: 600;
+  }
+
+  section {
+    display: grid;
+    gap: 1rem;
+    scroll-margin-top: 1rem;
+  }
+  section > p,
+  .giris-yazi {
+    color: var(--steel-700);
+  }
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: clamp(1.9rem, 6vw, 2.4rem);
+  }
+  h2 span {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 50%;
+    background: var(--spark);
+    color: var(--ink);
+    font-size: 1.4rem;
+  }
+
+  .adimlar {
+    display: grid;
+    gap: 1.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: adim;
+  }
+  .adimlar > li {
+    position: relative;
+    display: grid;
+    gap: 0.85rem;
+    padding-left: 2.6rem;
+    counter-increment: adim;
+  }
+  .adimlar > li::before {
+    content: counter(adim);
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: grid;
+    place-items: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--white);
+    font-family: var(--font-head);
+    font-weight: 700;
+  }
+  .adimlar p {
+    padding-top: 0.15rem;
+  }
+
+  figure {
+    width: fit-content;
+    max-width: 100%;
+    overflow: hidden;
+    border: 1px solid var(--steel-200);
+    border-radius: 14px;
+    box-shadow: 0 12px 30px -18px rgb(19 19 22 / 0.45);
+  }
+  figure :global(img) {
+    width: 380px;
+    max-width: 100%;
+    height: auto;
+  }
+  @media (max-width: 479px) {
+    .adimlar > li figure {
+      margin-left: -2.6rem;
+    }
+  }
+
+  .ipucu {
+    padding: 1rem 1.2rem;
+    border-left: 4px solid var(--spark);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    background: rgb(255 107 26 / 0.08);
+    line-height: 1.7;
+  }
+  .not {
+    font-size: 0.95rem;
+    color: var(--steel-500) !important;
+  }
+
+  .maddeler {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0 0 0.5rem;
+    padding-left: 1.2rem;
+    color: var(--steel-700);
+  }
+  .maddeler li::marker {
+    color: var(--spark);
+  }
+
+  .alt {
+    padding-block: 1.5rem;
+    background: var(--ink-2);
+    color: var(--steel-300);
+    font-size: 0.9rem;
+  }
+
+  a strong {
+    color: var(--spark-ink);
+  }
+</style>

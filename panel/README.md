@@ -19,14 +19,14 @@ Terminalde bu klasördeyken (`panel/`):
 | Dosya                     | İçindekiler                                                        |
 | :------------------------ | :----------------------------------------------------------------- |
 | `sanity.proje.ts`         | Sanity proje kimliği (projectId) ve veri seti adı                  |
-| `sanity.config.tsx`       | Panelin ana ayarları (Türkçe dil, menü, Yayınla butonu)            |
+| `sanity.config.tsx`       | Panelin ana ayarları (Türkçe dil, menü, Yayımla butonu)            |
 | `yapi.ts`                 | Panelin sol menüsü                                                 |
 | `schemaTypes/`            | Paneldeki içerik türleri ve alanları                               |
 | `schemaTypes/yapilanIs.ts`| Yapılan işler: başlık, bölüm, fotoğraflar, konum, tarih            |
 | `schemaTypes/hizmet.ts`   | Hizmet bölümleri: başlık, kısa açıklama, ikon, detaylı açıklama    |
 | `schemaTypes/sayfa.ts`    | Hakkımızda ve KVKK sayfaları                                       |
 | `schemaTypes/ayarlar.ts`  | Site Ayarları: telefon, adres, e-posta, Instagram                  |
-| `eylemler.ts`             | Sayfa adresini başlıktan otomatik dolduran "Yayınla" butonu        |
+| `eylemler.ts`             | Sayfa adresini başlıktan otomatik dolduran "Yayımla" butonu        |
 | `scripts/ilk-icerik.ts`   | İlk içerikleri yükleyen betik (sadece eksik belgeleri oluşturur)   |
 
 ## Hesap ve proje

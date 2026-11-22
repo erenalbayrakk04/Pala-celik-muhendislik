@@ -68,7 +68,7 @@ export const hizmet = defineType({
       name: 'slug',
       title: 'Sayfa adresi',
       type: 'slug',
-      description: 'Boş bırakırsanız "Yayınla"ya basınca başlıktan otomatik oluşturulur.',
+      description: 'Boş bırakırsanız "Yayımla"ya basınca başlıktan otomatik oluşturulur.',
       options: {source: 'baslik', slugify: turkceSlug},
     }),
   ],

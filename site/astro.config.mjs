@@ -17,7 +17,7 @@ export default defineConfig({
   },
 
   integrations: [
-    // Google için site haritası: /sitemap-index.xml (404 sayfası hariç)
-    sitemap({ filter: (sayfa) => !sayfa.includes('/404') }),
+    // Google için site haritası: /sitemap-index.xml (404 ve abinin panel kılavuzu hariç)
+    sitemap({ filter: (sayfa) => !sayfa.includes('/404') && !sayfa.includes('/kilavuz') }),
   ],
 });
