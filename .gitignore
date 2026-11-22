@@ -22,3 +22,6 @@ yedekler/
 Thumbs.db
 .idea/
 *.log
+
+# Cloudflare (wrangler) geçici dosyaları
+.wrangler/

@@ -1,0 +1,20 @@
+// Cloudflare ayarları: site, Cloudflare Workers üzerinde sabit dosyalar olarak yayınlanır.
+// Cloudflare her GitHub gönderiminde (ve panelden "Yayınla"ya basılınca) şunu yapar:
+//   npm run build        → dist/ klasörü üretilir (içerik ve görseller panelden çekilir)
+//   npx wrangler deploy  → dist/ yayınlanır
+// Derleme hata verirse yayın yapılmaz; sitedeki son sürüm olduğu gibi kalır.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  // Cloudflare panelindeki proje adıyla aynı olmalı
+  "name": "pala-celik-muhendislik",
+  "compatibility_date": "2026-11-22",
+  "assets": {
+    "directory": "./dist",
+    // Olmayan bir adrese girilince 404.html gösterilsin
+    "not_found_handling": "404-page",
+    // /hakkimizda.html dosyası /hakkimizda adresinde açılsın (sonunda "/" olmadan)
+    "html_handling": "drop-trailing-slash"
+  },
+  // Cloudflare'in verdiği ücretsiz önizleme adresi (…workers.dev) açık kalsın
+  "workers_dev": true
+}
