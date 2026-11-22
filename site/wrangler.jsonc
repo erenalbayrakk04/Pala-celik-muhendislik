@@ -16,5 +16,7 @@
     "html_handling": "drop-trailing-slash"
   },
   // Cloudflare'in verdiği ücretsiz önizleme adresi (…workers.dev) açık kalsın
-  "workers_dev": true
+  "workers_dev": true,
+  // Her sürüm için ayrı önizleme adresi açılmasın (tek dal kullanıyoruz)
+  "preview_urls": false
 }
