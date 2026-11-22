@@ -9,7 +9,7 @@ import {createReadStream} from 'node:fs'
 import {basename, resolve} from 'node:path'
 import {getCliClient} from 'sanity/cli'
 import {turkceSlug} from '../schemaTypes/turkceSlug'
-import {h2, kvkkIcerigi, madde, p} from './metinler'
+import {h2, KVKK_BASLIK, kvkkIcerigi, madde, p} from './metinler'
 
 const istemci = getCliClient({apiVersion: '2025-02-19'})
 const MALZEME = resolve(process.cwd(), '..', 'malzeme', 'instagram')
@@ -190,7 +190,7 @@ async function main() {
       'Çelik çatı, uzay çatı, çelik konstrüksiyon ve projeye özel çelik imalatta atölyeden şantiyeye tek elden hizmet. Film ve video sektörü için prodüksiyon ekipmanları.',
   })
   islem.createIfNotExists({_id: 'hakkimizda', _type: 'sayfa', baslik: 'Hakkımızda', icerik: hakkimizda})
-  islem.createIfNotExists({_id: 'kvkk', _type: 'sayfa', baslik: 'KVKK Aydınlatma Metni', icerik: kvkk})
+  islem.createIfNotExists({_id: 'kvkk', _type: 'sayfa', baslik: KVKK_BASLIK, icerik: kvkk})
 
   for (const [sira, h] of hizmetler.entries()) {
     islem.createIfNotExists({

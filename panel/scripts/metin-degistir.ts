@@ -4,18 +4,19 @@
 //
 // Çalıştırma (panel klasöründe):  npx sanity exec scripts/metin-degistir.ts --with-user-token
 //
-// DEGISIKLIKLER listesini ihtiyaca göre düzenleyin. Şu anki liste (22 Kasım 2026):
-// firmada mühendis olmadığı için "projeden montaja" gibi mühendislik hizmeti ima eden ifadeler.
+// DEGISIKLIKLER listesini ihtiyaca göre düzenleyin. Önceki listeler uygulandı ve git geçmişinde duruyor.
+// Şu anki liste (22 Kasım 2026): KVKK metninde ayrı "IBAN" kalemi yerine genel ödeme kayıtları ifadesi.
 import {getCliClient} from 'sanity/cli'
 
 const istemci = getCliClient({apiVersion: '2025-02-19'})
 
 type Degisiklik = {belge: string; eski: string; yeni: string}
 export const DEGISIKLIKLER: Degisiklik[] = [
-  {belge: 'ayarlar', eski: 'projeden montaja tek elden hizmet', yeni: 'atölyeden şantiyeye tek elden hizmet'},
-  {belge: 'ayarlar', eski: 'imalattan montaja tek elden hizmet', yeni: 'atölyeden şantiyeye tek elden hizmet'},
-  {belge: 'hakkimizda', eski: 'işleri projeden montaja tek elden yürütüyoruz', yeni: 'işleri atölyeden şantiyeye tek elden yürütüyoruz'},
-  {belge: 'hakkimizda', eski: 'işleri imalattan montaja tek elden yürütüyoruz', yeni: 'işleri atölyeden şantiyeye tek elden yürütüyoruz'},
+  {
+    belge: 'kvkk',
+    eski: 'IBAN ve ödeme kayıtları;',
+    yeni: 'ödeme kayıtları (havale veya EFT ile ödediğinizde gönderen bilgileri dahil);',
+  },
 ]
 
 type Deger = unknown
