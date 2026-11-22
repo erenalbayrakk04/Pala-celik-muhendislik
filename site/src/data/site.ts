@@ -74,6 +74,14 @@ export const firma = {
   ),
   instagram: { kullanici: instagramKullanici, link: instagramLink },
   tanitim: dolu(ayarlar.tanitim, VARSAYILAN.tanitim),
+  /** Resmi bilgiler (TTK m.39, 5651 m.3): panelde doldurulanlar alt bilgide görünür */
+  resmi: {
+    unvan: ayarlar.resmiUnvan?.trim() ?? '',
+    vergiDairesi: ayarlar.vergiDairesi?.trim() ?? '',
+    vergiNo: ayarlar.vergiNo?.replace(/\s/g, '') ?? '',
+    sicilNo: ayarlar.ticaretSicilNo?.trim() ?? '',
+    mersisNo: ayarlar.mersisNo?.replace(/\s/g, '') ?? '',
+  },
 };
 
 /** WhatsApp sohbetini hazır yazılmış bir mesajla açan bağlantıyı üretir. */

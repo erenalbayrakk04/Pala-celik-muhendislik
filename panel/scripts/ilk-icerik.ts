@@ -9,25 +9,10 @@ import {createReadStream} from 'node:fs'
 import {basename, resolve} from 'node:path'
 import {getCliClient} from 'sanity/cli'
 import {turkceSlug} from '../schemaTypes/turkceSlug'
+import {h2, kvkkIcerigi, madde, p} from './metinler'
 
 const istemci = getCliClient({apiVersion: '2025-02-19'})
 const MALZEME = resolve(process.cwd(), '..', 'malzeme', 'instagram')
-
-// ---------- Zengin metin yardımcıları ----------
-let anahtarSayaci = 0
-const anahtar = () => `k${(anahtarSayaci++).toString(36)}`
-
-const blok = (metin: string, ek: Record<string, unknown> = {}) => ({
-  _type: 'block',
-  _key: anahtar(),
-  style: 'normal',
-  markDefs: [],
-  children: [{_type: 'span', _key: anahtar(), text: metin, marks: []}],
-  ...ek,
-})
-const p = (metin: string) => blok(metin)
-const h2 = (metin: string) => blok(metin, {style: 'h2'})
-const madde = (metin: string) => blok(metin, {listItem: 'bullet', level: 1})
 
 // ---------- Görsel yükleme (aynı dosya ikinci kez yüklenmez, Sanity tanır) ----------
 async function gorselYukle(dosya: string) {
@@ -84,7 +69,7 @@ const hizmetler: HizmetTohum[] = [
     ikon: 'celik-ev',
     ozet: 'Kısa sürede kurulan, hafif ve sağlam çelik konstrüksiyon evler.',
     paragraflar: [
-      'Çelik konstrüksiyon evlerde taşıyıcı iskelet çelik profillerden oluşur. Hafif oldukları için deprem yükleri karşısında avantajlıdır; elemanlar ölçüsüne göre hazırlandığından sahadaki kurulum betonarmeye göre çok daha kısa sürer.',
+      'Çelik konstrüksiyon evlerde taşıyıcı iskelet çelik profillerden oluşur. Hafif oldukları için binaya ve zemine daha az yük bindirir; elemanlar ölçüsüne göre hazırlandığından sahadaki kurulum betonarmeye göre çok daha kısa sürer.',
       'İhtiyacınıza ve projenize uygun çelik iskeleti kuruyor, duvar, çatı ve kaplama aşamalarını birlikte planlıyoruz.',
     ],
     maddeler: ['Müstakil ev ve bahçe evi', 'Mevcut binalara ek kat', 'Ofis ve ticari yapılar'],
@@ -185,34 +170,7 @@ const hakkimizda = [
   madde('İşi teslim ettikten sonra da ulaşabileceğiniz bir muhatap oluyoruz.'),
 ]
 
-const kvkk = [
-  p(
-    '6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") uyarınca, veri sorumlusu sıfatıyla Pala Çelik & Mühendislik (Fatih Şahin) olarak kişisel verilerinizi aşağıda açıklanan şekilde işliyoruz.',
-  ),
-  h2('Hangi verileri işliyoruz?'),
-  p(
-    'Bu web sitesinde form bulunmaz. Bizimle telefon, WhatsApp veya e-posta yoluyla iletişime geçtiğinizde paylaştığınız ad-soyad, telefon numarası, e-posta adresi, adres ve talebinize ilişkin bilgiler (ölçü, fotoğraf, proje bilgisi gibi) işlenir.',
-  ),
-  h2('Hangi amaçla işliyoruz?'),
-  p(
-    'Talebinize dönüş yapmak, teklif hazırlamak, keşif ve iş planlaması yapmak, sözleşme kurmak ve yürütmek ile yasal yükümlülüklerimizi yerine getirmek amacıyla işliyoruz.',
-  ),
-  h2('Hukuki sebep'),
-  p(
-    "Verileriniz KVKK'nın 5. maddesinde yer alan; bir sözleşmenin kurulması veya ifasıyla doğrudan ilgili olması, hukuki yükümlülüğümüzü yerine getirebilmemiz ve meşru menfaatimiz için zorunlu olması sebeplerine dayanılarak işlenir.",
-  ),
-  h2('Aktarım'),
-  p(
-    'Verileriniz yalnızca yukarıdaki amaçlar için ve gerektiği ölçüde; yasal zorunluluk hâlinde yetkili kamu kurumlarıyla, işin yürütülmesi için gerekli olduğunda iş ortaklarımız ve tedarikçilerimizle paylaşılabilir. WhatsApp üzerinden yazdığınızda mesajlarınız WhatsApp (Meta) altyapısı üzerinden iletilir. Web sitemiz yurt dışında bulunan barındırma hizmetleri üzerinden yayınlanmaktadır.',
-  ),
-  h2('Haklarınız'),
-  p(
-    "KVKK'nın 11. maddesi uyarınca; verilerinizin işlenip işlenmediğini öğrenme, işlenmişse bilgi talep etme, işlenme amacını öğrenme, aktarıldığı kişileri bilme, eksik veya yanlış işlenmişse düzeltilmesini, silinmesini veya yok edilmesini isteme, itiraz etme ve zarara uğramanız hâlinde tazminat talep etme haklarına sahipsiniz.",
-  ),
-  p(
-    'Başvurularınızı info@palacelikmuhendislik.com adresine e-posta ile veya Huzur Mah. Ulubaş Cad. Ulubaş Pasajı No: 11 Kat: 1 Daire: 40 Sarıyer / İstanbul adresine yazılı olarak iletebilirsiniz.',
-  ),
-]
+const kvkk = kvkkIcerigi()
 
 // ---------- Yükleme ----------
 async function main() {

@@ -6,6 +6,15 @@ import { firma, menu } from '../data/site';
 import { hizmetler } from '../lib/icerik';
 
 const yil = new Date().getFullYear();
+
+// Resmi bilgiler (panel → Site Ayarları → Resmi firma bilgileri). Boş olanlar gösterilmez.
+const r = firma.resmi;
+const resmiBilgiler = [
+  r.unvan && `Ticaret unvanı: ${r.unvan}`,
+  r.vergiDairesi && (r.vergiNo ? `${r.vergiDairesi} · VKN: ${r.vergiNo}` : r.vergiDairesi),
+  r.sicilNo && `Ticaret sicil no: ${r.sicilNo}`,
+  r.mersisNo && `MERSİS: ${r.mersisNo}`,
+].filter(Boolean);
 ---
 
 <footer class="footer">
@@ -49,8 +58,11 @@ const yil = new Date().getFullYear();
 
   <div class="footer__alt">
     <div class="container">
-      <p>© {yil} {firma.ad}. Tüm hakları saklıdır.</p>
-      <a href="/kvkk">KVKK Aydınlatma Metni</a>
+      <div class="footer__yasal">
+        <p>© {yil} {firma.ad}. Tüm hakları saklıdır.</p>
+        {resmiBilgiler.length > 0 && <p class="footer__resmi">{resmiBilgiler.join(' · ')}</p>}
+      </div>
+      <a href="/kvkk">KVKK ve Çerez Politikası</a>
     </div>
   </div>
 </footer>
@@ -151,6 +163,14 @@ const yil = new Date().getFullYear();
     padding-block: 1.25rem;
     /* sağ alttaki iletişim butonları yazıların üstüne binmesin */
     padding-right: 4.5rem;
+  }
+  .footer__yasal {
+    display: grid;
+    gap: 0.25rem;
+  }
+  .footer__resmi {
+    font-size: 0.8rem;
+    color: var(--steel-500);
   }
   /* Dar ekranda sayfanın en altında butonlar için boşluk bırak */
   @media (max-width: 1299px) {

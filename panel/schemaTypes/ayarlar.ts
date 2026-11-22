@@ -10,6 +10,13 @@ export const ayarlar = defineType({
   icon: CogIcon,
   fieldsets: [
     {name: 'iletisim', title: 'İletişim bilgileri'},
+    {
+      name: 'resmi',
+      title: 'Resmi firma bilgileri',
+      description:
+        'Vergi levhasında / ticaret sicilinde yazan bilgiler. Doldurulanlar sitenin en altında küçük yazıyla görünür (yasal zorunluluk).',
+      options: {collapsible: true, collapsed: false},
+    },
     {name: 'diger', title: 'Diğer'},
   ],
   fields: [
@@ -63,6 +70,52 @@ export const ayarlar = defineType({
       type: 'url',
       fieldset: 'iletisim',
       description: 'İsteğe bağlı: Google Haritalar\'da işletmeyi açıp "Paylaş" ile alınan link.',
+    }),
+    defineField({
+      name: 'resmiUnvan',
+      title: 'Ticaret unvanı (resmi ad)',
+      type: 'string',
+      fieldset: 'resmi',
+      description: 'Vergi levhasında yazan tam ad. Örnek: "Fatih Şahin – Pala Çelik ve Mühendislik"',
+    }),
+    defineField({
+      name: 'vergiDairesi',
+      title: 'Vergi dairesi',
+      type: 'string',
+      fieldset: 'resmi',
+      description: 'Örnek: Sarıyer Vergi Dairesi',
+    }),
+    defineField({
+      name: 'vergiNo',
+      title: 'Vergi numarası',
+      type: 'string',
+      fieldset: 'resmi',
+      description:
+        'Şirketseniz 10 haneli vergi numarası. Şahıs işletmesiyseniz BOŞ bırakın (T.C. kimlik numarası sitede yayımlanmamalı).',
+      validation: (kural) =>
+        kural.custom((deger?: string) =>
+          !deger || /^\d{10}$/.test(deger.replace(/\s/g, ''))
+            ? true
+            : 'Vergi numarası 10 haneli olmalı. T.C. kimlik numarası yazmayın.',
+        ),
+    }),
+    defineField({
+      name: 'ticaretSicilNo',
+      title: 'Ticaret sicil numarası',
+      type: 'string',
+      fieldset: 'resmi',
+      description: 'Ticaret odasına kayıtlıysanız. Esnaf odasına kayıtlıysanız boş bırakın.',
+    }),
+    defineField({
+      name: 'mersisNo',
+      title: 'MERSİS numarası',
+      type: 'string',
+      fieldset: 'resmi',
+      description: 'Varsa 16 haneli MERSİS numarası.',
+      validation: (kural) =>
+        kural.custom((deger?: string) =>
+          !deger || /^\d{16}$/.test(deger.replace(/\s/g, '')) ? true : 'MERSİS numarası 16 haneli olmalı.',
+        ),
     }),
     defineField({
       name: 'instagram',

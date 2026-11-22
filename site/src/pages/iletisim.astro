@@ -102,7 +102,10 @@ const kartlar = [
         <div class="harita" data-harita data-kaynak={haritaGomme}>
           <div class="harita__kapak">
             <Ikon ad="map-pin" />
-            <p>Harita Google Haritalar'dan yüklenecek.</p>
+            <p>
+              Harita Google Haritalar'dan yüklenecek; Google bu sırada çerez kullanabilir.
+              <a href="/kvkk">Ayrıntılar</a>
+            </p>
             <button class="btn btn--primary" type="button" data-harita-buton>Haritayı göster</button>
           </div>
         </div>
@@ -265,6 +268,11 @@ const kartlar = [
     color: var(--steel-300);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='42' viewBox='0 0 48 42'%3E%3Cpath d='M0 .5h48M0 0l24 42L48 0' fill='none' stroke='%23ffffff' stroke-opacity='.07' stroke-width='1'/%3E%3C/svg%3E");
     background-size: 48px 42px;
+  }
+  .harita__kapak a {
+    color: var(--white);
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
   .harita__kapak > :global(svg) {
     width: 2.5rem;

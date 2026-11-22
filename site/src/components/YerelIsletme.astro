@@ -13,6 +13,8 @@ const veri = {
   '@context': 'https://schema.org',
   '@type': 'HomeAndConstructionBusiness',
   name: firma.ad,
+  ...(firma.resmi.unvan ? { legalName: firma.resmi.unvan } : {}),
+  ...(firma.resmi.vergiNo ? { taxID: firma.resmi.vergiNo } : {}),
   url: Astro.site?.href,
   logo: new URL('/apple-touch-icon.png', Astro.site).href,
   image: new URL('/og-gorsel.png', Astro.site).href,

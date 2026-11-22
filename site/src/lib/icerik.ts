@@ -59,6 +59,11 @@ export type Sayfa = {
 export type Ayarlar = {
   firmaAdi?: string;
   yetkili?: string;
+  resmiUnvan?: string;
+  vergiDairesi?: string;
+  vergiNo?: string;
+  ticaretSicilNo?: string;
+  mersisNo?: string;
   telefon?: string;
   whatsapp?: string;
   eposta?: string;
@@ -73,7 +78,7 @@ const GORSEL = `{..., "boyut": asset->metadata.dimensions{width, height}}`;
 const ZENGIN = `[]{..., _type == "image" => {"boyut": asset->metadata.dimensions{width, height}}}`;
 
 const SORGU = `{
-  "ayarlar": *[_id == "ayarlar"][0]{firmaAdi, yetkili, telefon, whatsapp, eposta, adres, haritaLinki, instagram, tanitim},
+  "ayarlar": *[_id == "ayarlar"][0]{firmaAdi, yetkili, telefon, whatsapp, eposta, adres, haritaLinki, instagram, tanitim, resmiUnvan, vergiDairesi, vergiNo, ticaretSicilNo, mersisNo},
   "hizmetler": *[_type == "hizmet" && defined(slug.current)] | order(coalesce(sira, 100) asc, baslik asc) {
     "slug": slug.current, baslik, ozet, ikon, kapak${GORSEL}, aciklama${ZENGIN}
   },
