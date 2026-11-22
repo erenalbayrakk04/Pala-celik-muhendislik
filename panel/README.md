@@ -36,6 +36,10 @@ Terminalde bu klasördeyken (`panel/`):
 - Panel adresi: https://palacelikmuhendislik.sanity.studio (Sanity'nin kendi giriş sayfasına yönlendirir)
 - Panele yeni kişi eklemek: https://www.sanity.io/manage → Pala Çelik → Members → Invite
 - İlk içerikleri yeniden yüklemek: `npx sanity exec scripts/ilk-icerik.ts --with-user-token`
+- Otomatik yayın: Sanity webhook'u ("Cloudflare: siteyi yeniden yayınla") yayınlanan/silinen her iş, hizmet,
+  sayfa ve ayar değişikliğinde Cloudflare'in deploy hook'unu çağırır; site ~1 dakikada güncellenir.
+  Taslaklar tetiklemez. Kayıtlar: `npx sanity hooks logs`
+- Haftalık yedek: GitHub Actions (`.github/workflows/yedek.yml`), okuma anahtarı "GitHub haftalik yedek" (viewer)
 
 ## Yeni bir alan eklemek
 
