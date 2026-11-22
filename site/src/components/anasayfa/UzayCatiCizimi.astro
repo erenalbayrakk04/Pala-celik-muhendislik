@@ -1,0 +1,119 @@
+---
+// Anasayfanın girişindeki dekoratif uzay çatı çizimi (izometrik görünüm).
+// Düğüm noktaları ve çubuklar aşağıda hesaplanıp düz SVG olarak çiziliyor.
+// Sayıları değiştirerek ağı büyütüp küçültebilirsin.
+const N = 6; // üst katmanda bir kenardaki düğüm sayısı
+const GOZ = 56; // iki düğüm arası mesafe
+const DERINLIK = 0.75; // alt katmanın üst katmana uzaklığı (göz aralığı cinsinden)
+
+const cos30 = Math.cos(Math.PI / 6);
+const sin30 = Math.sin(Math.PI / 6);
+
+type Nokta = { x: number; y: number };
+const nokta = (i: number, j: number, z: number): Nokta => ({
+  x: (i - j) * cos30 * GOZ,
+  y: (i + j) * sin30 * GOZ + z * GOZ,
+});
+
+const ustDugumler: (Nokta & { vurgu: boolean })[] = [];
+const altDugumler: Nokta[] = [];
+const ustCubuklar: [Nokta, Nokta][] = [];
+const altCubuklar: [Nokta, Nokta][] = [];
+const diyagonaller: [Nokta, Nokta][] = [];
+
+// Üst katman: kare ızgara
+for (let i = 0; i < N; i++) {
+  for (let j = 0; j < N; j++) {
+    ustDugumler.push({ ...nokta(i, j, 0), vurgu: i > 0 && (i * 3 + j * 2) % 7 === 0 });
+    if (i < N - 1) ustCubuklar.push([nokta(i, j, 0), nokta(i + 1, j, 0)]);
+    if (j < N - 1) ustCubuklar.push([nokta(i, j, 0), nokta(i, j + 1, 0)]);
+  }
+}
+
+// Alt katman: göz ortalarında, aşağıda; her düğüm üstteki 4 düğüme bağlı
+for (let i = 0; i < N - 1; i++) {
+  for (let j = 0; j < N - 1; j++) {
+    const a = nokta(i + 0.5, j + 0.5, DERINLIK);
+    altDugumler.push(a);
+    if (i < N - 2) altCubuklar.push([a, nokta(i + 1.5, j + 0.5, DERINLIK)]);
+    if (j < N - 2) altCubuklar.push([a, nokta(i + 0.5, j + 1.5, DERINLIK)]);
+    for (const [di, dj] of [
+      [0, 0],
+      [1, 0],
+      [0, 1],
+      [1, 1],
+    ]) {
+      diyagonaller.push([a, nokta(i + di, j + dj, 0)]);
+    }
+  }
+}
+
+const tumu = [...ustDugumler, ...altDugumler];
+const PAY = 16;
+const minX = Math.min(...tumu.map((p) => p.x)) - PAY;
+const maxX = Math.max(...tumu.map((p) => p.x)) + PAY;
+const minY = Math.min(...tumu.map((p) => p.y)) - PAY;
+const maxY = Math.max(...tumu.map((p) => p.y)) + PAY;
+
+const yuvarla = (n: number) => Math.round(n * 10) / 10;
+const cizgi = ([a, b]: [Nokta, Nokta]) => `M${yuvarla(a.x)} ${yuvarla(a.y)}L${yuvarla(b.x)} ${yuvarla(b.y)}`;
+---
+
+<svg
+  class="uzay-cati"
+  viewBox={`${yuvarla(minX)} ${yuvarla(minY)} ${yuvarla(maxX - minX)} ${yuvarla(maxY - minY)}`}
+  aria-hidden="true"
+>
+  <path class="diyagonal" d={diyagonaller.map(cizgi).join('')}></path>
+  <path class="alt" d={altCubuklar.map(cizgi).join('')}></path>
+  <path class="ust" d={ustCubuklar.map(cizgi).join('')}></path>
+  {altDugumler.map((p) => <circle class="dugum-alt" cx={yuvarla(p.x)} cy={yuvarla(p.y)} r="2.6" />)}
+  {
+    ustDugumler.map((p) => (
+      <circle class={p.vurgu ? 'dugum-vurgu' : 'dugum'} cx={yuvarla(p.x)} cy={yuvarla(p.y)} r={p.vurgu ? 5 : 3.4} />
+    ))
+  }
+</svg>
+
+<style>
+  .uzay-cati {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  path {
+    fill: none;
+    stroke-linecap: round;
+  }
+  .diyagonal {
+    stroke: var(--steel-500);
+    stroke-width: 1.1;
+    opacity: 0.55;
+  }
+  .alt {
+    stroke: var(--steel-500);
+    stroke-width: 1.3;
+    opacity: 0.75;
+  }
+  .ust {
+    stroke: var(--steel-300);
+    stroke-width: 1.8;
+    opacity: 0.9;
+  }
+  .dugum-alt {
+    fill: var(--steel-500);
+  }
+  .dugum {
+    fill: var(--steel-200);
+  }
+  .dugum-vurgu {
+    fill: var(--spark);
+    filter: drop-shadow(0 0 6px rgb(255 107 26 / 0.9));
+    animation: parla 3.2s ease-in-out infinite;
+  }
+  @keyframes parla {
+    50% {
+      opacity: 0.45;
+    }
+  }
+</style>

@@ -1,0 +1,149 @@
+---
+// /yapilan-isler: bütün işler (yeni önce). Üstteki düğmelerle bölüme göre süzülebilir.
+// Süzme küçük bir betikle çalışır; betik çalışmazsa bütün işler görünür.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SayfaBasligi from '../../components/SayfaBasligi.astro';
+import IsKarti from '../../components/IsKarti.astro';
+import TeklifBandi from '../../components/TeklifBandi.astro';
+import { hizmetler, isler } from '../../lib/icerik';
+import { firma } from '../../data/site';
+
+// Sadece işi olan bölümler için düğme göster (hizmet sırasıyla)
+const bolumler = hizmetler
+  .map((h) => ({ slug: h.slug, baslik: h.baslik, sayi: isler.filter((is) => is.hizmet?.slug === h.slug).length }))
+  .filter((b) => b.sayi > 0);
+---
+
+<BaseLayout
+  baslik={`Yapılan İşler | ${firma.ad}`}
+  aciklama="Çelik çatı, uzay çatı, çelik konstrüksiyon ve projeye özel çelik imalat işlerimizden örnekler."
+>
+  <SayfaBasligi
+    ust="Yapılan İşler"
+    baslik="İşlerimizden örnekler"
+    aciklama="Atölyemizde ürettiğimiz ve sahada uyguladığımız işler. Bir işin üzerine tıklayarak fotoğraflarını ve ayrıntılarını görebilirsiniz."
+    sayfaAdi="Yapılan İşler"
+  />
+
+  <section class="section section--paper">
+    <div class="container">
+      {
+        isler.length === 0 ? (
+          <p class="bos">Yakında burada işlerimizi paylaşacağız.</p>
+        ) : (
+          <>
+            {bolumler.length > 1 && (
+              <nav class="suzgec" aria-label="Bölüme göre süz" data-suzgec>
+                <a href="/yapilan-isler" data-bolum="" aria-current="true">
+                  Tümü <span>{isler.length}</span>
+                </a>
+                {bolumler.map((b) => (
+                  <a href={`/yapilan-isler?bolum=${b.slug}`} data-bolum={b.slug}>
+                    {b.baslik} <span>{b.sayi}</span>
+                  </a>
+                ))}
+              </nav>
+            )}
+            <ul class="isler" role="list" data-isler>
+              {isler.map((is, i) => (
+                <li data-bolum={is.hizmet?.slug ?? ''}>
+                  <IsKarti is={is} ilkGorunen={i < 4} />
+                </li>
+              ))}
+            </ul>
+          </>
+        )
+      }
+    </div>
+  </section>
+
+  <TeklifBandi />
+</BaseLayout>
+
+<script>
+  const suzgec = document.querySelector<HTMLElement>('[data-suzgec]');
+  const ogeler = document.querySelectorAll<HTMLElement>('[data-isler] > li');
+
+  function uygula(bolum: string) {
+    ogeler.forEach((li) => (li.hidden = Boolean(bolum) && li.dataset.bolum !== bolum));
+    suzgec?.querySelectorAll<HTMLAnchorElement>('a').forEach((a) => {
+      if ((a.dataset.bolum ?? '') === bolum) a.setAttribute('aria-current', 'true');
+      else a.removeAttribute('aria-current');
+    });
+  }
+
+  if (suzgec) {
+    // Adres çubuğunda ?bolum=... varsa (ör. hizmet sayfasından gelindiyse) ona göre başla
+    const ilk = new URLSearchParams(location.search).get('bolum') ?? '';
+    if (suzgec.querySelector(`a[data-bolum="${CSS.escape(ilk)}"]`)) uygula(ilk);
+
+    suzgec.addEventListener('click', (olay) => {
+      const a = (olay.target as HTMLElement).closest<HTMLAnchorElement>('a[data-bolum]');
+      if (!a) return;
+      olay.preventDefault();
+      const bolum = a.dataset.bolum ?? '';
+      uygula(bolum);
+      history.replaceState(null, '', bolum ? `?bolum=${bolum}` : location.pathname);
+    });
+  }
+</script>
+
+<style>
+  .suzgec {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  .suzgec a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--steel-200);
+    border-radius: 999px;
+    background: var(--white);
+    font-weight: 600;
+    transition:
+      border-color 0.2s,
+      background-color 0.2s,
+      color 0.2s;
+  }
+  .suzgec a:hover {
+    border-color: var(--ink);
+  }
+  .suzgec a span {
+    font-size: 0.85rem;
+    color: var(--steel-500);
+  }
+  .suzgec a[aria-current] {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--white);
+  }
+  .suzgec a[aria-current] span {
+    color: var(--spark);
+  }
+
+  .isler {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (min-width: 768px) {
+    .isler {
+      gap: 1.25rem;
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @media (min-width: 1100px) {
+    .isler {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .bos {
+    font-size: 1.2rem;
+    color: var(--steel-500);
+  }
+</style>

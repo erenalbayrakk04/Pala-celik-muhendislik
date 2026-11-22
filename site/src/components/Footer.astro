@@ -1,0 +1,161 @@
+---
+// Sayfaların en altındaki koyu bölüm: logo, kısa tanıtım, iletişim bilgileri ve bağlantılar.
+import Logo from '../assets/logo/pala-logo.svg';
+import Ikon from './Ikon.astro';
+import { firma, menu } from '../data/site';
+import { hizmetler } from '../lib/icerik';
+
+const yil = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer__ust">
+    <div class="footer__marka">
+      <a href="/" class="footer__logo" aria-label={`${firma.ad} – Anasayfa`}><Logo aria-hidden="true" /></a>
+      <p>{firma.tanitim}</p>
+    </div>
+
+    <div class="footer__iletisim-blok">
+      <h2>İletişim</h2>
+      <ul role="list" class="footer__iletisim">
+        <li>
+          <Ikon ad="map-pin" />
+          <a href={firma.haritaLinki} target="_blank" rel="noopener">
+            {firma.adresSatirlari.map((satir, i) => (i === 0 ? satir : [<br />, satir]))}
+          </a>
+        </li>
+        <li><Ikon ad="phone" /><a href={firma.telefonLink}>{firma.telefon}</a></li>
+        <li><Ikon ad="mail" /><a href={`mailto:${firma.eposta}`}>{firma.eposta}</a></li>
+        <li>
+          <Ikon ad="instagram" /><a href={firma.instagram.link} target="_blank" rel="noopener">@{firma.instagram.kullanici}</a>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <h2>Sayfalar</h2>
+      <ul role="list" class="footer__liste">
+        {menu.map((m) => <li><a href={m.link}>{m.ad}</a></li>)}
+      </ul>
+    </div>
+
+    <div>
+      <h2>Hizmetler</h2>
+      <ul role="list" class="footer__liste">
+        {hizmetler.map((h) => <li><a href={`/hizmetler/${h.slug}`}>{h.baslik}</a></li>)}
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer__alt">
+    <div class="container">
+      <p>© {yil} {firma.ad}. Tüm hakları saklıdır.</p>
+      <a href="/kvkk">KVKK Aydınlatma Metni</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--ink-2);
+    color: var(--steel-300);
+    font-size: 1rem;
+  }
+  /* Telefonda: logo ve iletişim tam genişlik, "Sayfalar" ile "Hizmetler" yan yana */
+  .footer__ust {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.75rem 1.5rem;
+    padding-block: clamp(3.5rem, 7vw, 5rem);
+  }
+  .footer__marka,
+  .footer__iletisim-blok {
+    grid-column: 1 / -1;
+  }
+  @media (min-width: 700px) {
+    .footer__marka,
+    .footer__iletisim-blok {
+      grid-column: auto;
+    }
+  }
+  @media (min-width: 1024px) {
+    .footer__ust {
+      grid-template-columns: 1.35fr 1.15fr 0.75fr 1fr;
+    }
+  }
+  .footer__logo {
+    display: inline-block;
+    color: var(--white);
+  }
+  .footer__logo :global(svg) {
+    height: 78px;
+    width: auto;
+  }
+  .footer__marka p {
+    margin-top: 1.25rem;
+    max-width: 22rem;
+  }
+  h2 {
+    position: relative;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    font-size: 1.25rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+  h2::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 2.25rem;
+    height: 2px;
+    background: var(--spark);
+  }
+  .footer__iletisim {
+    display: grid;
+    gap: 0.9rem;
+  }
+  .footer__iletisim li {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+  .footer__iletisim :global(svg) {
+    flex: none;
+    width: 1.15rem;
+    height: 1.15rem;
+    margin-top: 0.2rem;
+    color: var(--spark);
+  }
+  .footer__liste {
+    display: grid;
+    gap: 0.55rem;
+  }
+  .footer a {
+    transition: color 0.2s;
+  }
+  .footer a:hover {
+    color: var(--white);
+  }
+  .footer__alt {
+    border-top: 1px solid rgb(255 255 255 / 0.08);
+    font-size: 0.9rem;
+  }
+  .footer__alt .container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    padding-block: 1.25rem;
+    /* sağ alttaki iletişim butonları yazıların üstüne binmesin */
+    padding-right: 4.5rem;
+  }
+  /* Dar ekranda sayfanın en altında butonlar için boşluk bırak */
+  @media (max-width: 1299px) {
+    .footer__alt .container {
+      padding-bottom: 7rem;
+    }
+  }
+</style>

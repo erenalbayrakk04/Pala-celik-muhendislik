@@ -1,0 +1,20 @@
+---
+// Anasayfa. Her bölüm src/components/anasayfa/ klasöründe ayrı bir dosyada duruyor;
+// sırasını değiştirmek için aşağıdaki satırların yerini değiştirmen yeterli.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/anasayfa/Hero.astro';
+import Hizmetler from '../components/anasayfa/Hizmetler.astro';
+import Surec from '../components/anasayfa/Surec.astro';
+import SonIsler from '../components/anasayfa/SonIsler.astro';
+import TeklifBandi from '../components/TeklifBandi.astro';
+import YerelIsletme from '../components/YerelIsletme.astro';
+---
+
+<BaseLayout>
+  <YerelIsletme slot="head" />
+  <Hero />
+  <Hizmetler />
+  <Surec />
+  <SonIsler />
+  <TeklifBandi />
+</BaseLayout>

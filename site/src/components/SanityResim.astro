@@ -1,0 +1,33 @@
+---
+// Panelden gelen bir görseli gösterir. Görsel, site yayınlanırken indirilip
+// küçültülür (webp) ve sitenin içine konur; ziyaretçi Sanity'ye bağlanmaz.
+import { Image } from 'astro:assets';
+import { gorselBoyutla, type SanityGorsel } from '../lib/sanity';
+
+interface Props {
+  gorsel: SanityGorsel;
+  alt: string;
+  genislik: number; // en büyük gösterim genişliği (px)
+  oran?: number; // genişlik / yükseklik; verilirse odak noktasına göre kırpılır
+  sizes?: string;
+  class?: string;
+  loading?: 'lazy' | 'eager';
+}
+
+const { gorsel, alt, genislik, oran, sizes, class: sinif, loading = 'lazy' } = Astro.props;
+const r = gorselBoyutla(gorsel, genislik, oran);
+// Telefonlar için yarı boyutlu bir kopya da üret
+const widths = r.width >= 640 ? [Math.round(r.width / 2), r.width] : undefined;
+---
+
+<Image
+  src={r.src}
+  width={r.width}
+  height={r.height}
+  alt={gorsel.alt?.trim() || alt}
+  widths={widths}
+  sizes={widths ? (sizes ?? `(max-width: ${r.width}px) 100vw, ${r.width}px`) : undefined}
+  loading={loading}
+  decoding="async"
+  class={sinif}
+/>

@@ -1,0 +1,34 @@
+---
+// Olmayan bir adrese girilince gösterilen sayfa.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Ikon from '../components/Ikon.astro';
+import { firma } from '../data/site';
+---
+
+<BaseLayout baslik={`Sayfa bulunamadı | ${firma.ad}`}>
+  <section class="section">
+    <div class="container bulunamadi">
+      <p class="eyebrow">404</p>
+      <h1>Bu sayfa bulunamadı</h1>
+      <p>Aradığınız sayfa taşınmış ya da henüz hazırlanıyor olabilir.</p>
+      <a class="btn btn--dark" href="/">Anasayfaya dön <Ikon ad="arrow-right" /></a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .bulunamadi {
+    display: grid;
+    justify-items: start;
+    gap: 1.25rem;
+    min-height: 40vh;
+    align-content: center;
+  }
+  h1 {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+  }
+  p:not(.eyebrow) {
+    color: var(--steel-500);
+    font-size: 1.15rem;
+  }
+</style>

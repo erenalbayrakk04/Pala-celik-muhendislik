@@ -1,0 +1,164 @@
+---
+// Paneldeki "zengin metin" alanını (paragraf, başlık, liste, kalın/italik, bağlantı, görsel) HTML'e çevirir.
+import SanityResim from './SanityResim.astro';
+import type { ZenginMetin } from '../lib/icerik';
+import type { SanityGorsel } from '../lib/sanity';
+
+interface Props {
+  deger: ZenginMetin | null | undefined;
+  class?: string;
+}
+
+type Span = { _type: 'span'; text?: string; marks?: string[] };
+type Isaret = { _key: string; _type: string; href?: string };
+type Blok = {
+  _type: 'block';
+  _key: string;
+  style?: string;
+  listItem?: 'bullet' | 'number';
+  markDefs?: Isaret[];
+  children?: Span[];
+};
+type Grup = { tur: 'liste'; numarali: boolean; ogeler: Blok[] } | { tur: 'tek'; oge: ZenginMetin[number] };
+
+const { deger, class: sinif } = Astro.props;
+
+const kacis = (s: string) =>
+  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+// Sadece güvenli bağlantılar: http(s), mailto, tel ve site içi adresler
+const guvenliLink = (href = '') => /^(https?:\/\/|mailto:|tel:|\/)/i.test(href.trim());
+
+function blokHtml(b: Blok) {
+  return (b.children ?? [])
+    .map((s) => {
+      let h = kacis(s.text ?? '').replace(/\n/g, '<br>');
+      for (const m of s.marks ?? []) {
+        if (m === 'strong') h = `<strong>${h}</strong>`;
+        else if (m === 'em') h = `<em>${h}</em>`;
+        else {
+          const tanim = b.markDefs?.find((d) => d._key === m);
+          if (tanim?._type === 'link' && tanim.href && guvenliLink(tanim.href)) {
+            const disari = /^https?:/i.test(tanim.href) && !tanim.href.includes('palacelikmuhendislik.com');
+            h = `<a href="${kacis(tanim.href.trim())}"${disari ? ' target="_blank" rel="noopener"' : ''}>${h}</a>`;
+          }
+        }
+      }
+      return h;
+    })
+    .join('');
+}
+
+const bosMu = (b: Blok) => !(b.children ?? []).some((s) => s.text?.trim());
+
+// Art arda gelen liste maddelerini tek bir <ul>/<ol> altında topla
+const gruplar: Grup[] = [];
+for (const oge of deger ?? []) {
+  if (oge._type === 'block') {
+    const b = oge as unknown as Blok;
+    if (bosMu(b)) continue;
+    if (b.listItem) {
+      const numarali = b.listItem === 'number';
+      const son = gruplar.at(-1);
+      if (son?.tur === 'liste' && son.numarali === numarali) son.ogeler.push(b);
+      else gruplar.push({ tur: 'liste', numarali, ogeler: [b] });
+      continue;
+    }
+  }
+  gruplar.push({ tur: 'tek', oge });
+}
+
+const etiket = (stil?: string) => (stil === 'h2' ? 'h2' : stil === 'h3' ? 'h3' : 'p');
+---
+
+<div class:list={['zengin', sinif]}>
+  {
+    gruplar.map((g) => {
+      if (g.tur === 'liste') {
+        const Liste = g.numarali ? 'ol' : 'ul';
+        return (
+          <Liste>
+            {g.ogeler.map((b) => (
+              <li set:html={blokHtml(b)} />
+            ))}
+          </Liste>
+        );
+      }
+      const oge = g.oge;
+      if (oge._type === 'image' && (oge as unknown as SanityGorsel).asset) {
+        return (
+          <figure>
+            <SanityResim gorsel={oge as unknown as SanityGorsel} alt="" genislik={1200} sizes="(max-width: 760px) 100vw, 46rem" />
+          </figure>
+        );
+      }
+      if (oge._type !== 'block') return null;
+      const b = oge as unknown as Blok;
+      const Etiket = etiket(b.style);
+      return <Etiket set:html={blokHtml(b)} />;
+    })
+  }
+</div>
+
+<style>
+  .zengin {
+    display: grid;
+    gap: 1.1rem;
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: var(--steel-700);
+  }
+  .zengin :global(h2),
+  .zengin :global(h3) {
+    margin-top: 1rem;
+    color: var(--ink);
+  }
+  .zengin :global(h2) {
+    font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+  }
+  .zengin :global(h3) {
+    font-size: 1.5rem;
+  }
+  .zengin :global(ul),
+  .zengin :global(ol) {
+    display: grid;
+    gap: 0.5rem;
+    padding-left: 1.4rem;
+  }
+  .zengin :global(ul) {
+    list-style: none;
+    padding-left: 0;
+  }
+  .zengin :global(ul > li) {
+    position: relative;
+    padding-left: 1.6rem;
+  }
+  /* Madde işareti: küçük turuncu kare (çelik plaka) */
+  .zengin :global(ul > li::before) {
+    content: '';
+    position: absolute;
+    left: 0.2rem;
+    top: 0.62em;
+    width: 0.55rem;
+    height: 0.55rem;
+    background: var(--spark);
+    border-radius: 2px;
+  }
+  .zengin :global(a) {
+    color: var(--spark-ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .zengin :global(strong) {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .zengin :global(figure) {
+    margin-block: 0.75rem;
+  }
+  .zengin :global(figure img) {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+  }
+</style>

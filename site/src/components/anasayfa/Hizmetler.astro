@@ -1,0 +1,36 @@
+---
+// Anasayfadaki "Hizmetlerimiz" bölümü: her hizmet için bir kart.
+import HizmetKarti from '../HizmetKarti.astro';
+import { hizmetler } from '../../lib/icerik';
+---
+
+<section class="section section--paper" id="hizmetler" aria-labelledby="hizmetler-baslik">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Hizmetlerimiz</p>
+      <h2 id="hizmetler-baslik">Çatıdan duvara, atölyeden şantiyeye</h2>
+      <p>
+        Konuttan fabrikaya her ölçekte çelik işinde; projeyi birlikte planlıyor, atölyemizde üretiyor ve yerinde
+        uyguluyoruz.
+      </p>
+    </div>
+
+    <ul class="liste" role="list">
+      {
+        hizmetler.map((h, i) => (
+          <li>
+            <HizmetKarti hizmet={h} sira={i + 1} />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .liste {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16.5rem), 1fr));
+  }
+</style>

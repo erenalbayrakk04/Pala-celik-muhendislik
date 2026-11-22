@@ -1,0 +1,33 @@
+---
+// Google için işletme bilgisi (JSON-LD). Ziyaretçi görmez; arama sonuçlarında firmanın adı,
+// adresi ve telefonunun doğru anlaşılmasına yardım eder. Anasayfa ve İletişim sayfasında kullanılıyor.
+import { firma } from '../data/site';
+import { hizmetler } from '../lib/icerik';
+
+const satirlar = [...firma.adresSatirlari];
+// Son satır "Sarıyer / İstanbul" biçimindeyse ilçe ve ili ayır
+const son = satirlar.at(-1)?.split('/').map((s) => s.trim());
+const ilceIl = son?.length === 2 ? (satirlar.pop(), son) : null;
+
+const veri = {
+  '@context': 'https://schema.org',
+  '@type': 'HomeAndConstructionBusiness',
+  name: firma.ad,
+  url: Astro.site?.href,
+  logo: new URL('/apple-touch-icon.png', Astro.site).href,
+  image: new URL('/og-gorsel.png', Astro.site).href,
+  telephone: `+${firma.telefonLink.replace(/\D/g, '')}`,
+  email: firma.eposta,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: satirlar.join(', '),
+    ...(ilceIl ? { addressLocality: ilceIl[0], addressRegion: ilceIl[1] } : {}),
+    addressCountry: 'TR',
+  },
+  areaServed: 'İstanbul',
+  sameAs: [firma.instagram.link],
+  knowsAbout: hizmetler.map((h) => h.baslik),
+};
+---
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(veri).replace(/</g, '\\u003c')} />

@@ -1,0 +1,109 @@
+---
+// "Nasıl çalışıyoruz" bölümü: teklif alma sürecinin 4 adımı.
+const adimlar = [
+  {
+    baslik: 'Bize yazın',
+    metin: "WhatsApp'tan ya da telefonla işinizi kısaca anlatın; varsa fotoğraf, ölçü veya proje gönderin.",
+  },
+  {
+    baslik: 'İşi netleştirelim',
+    metin: 'İhtiyacınızı birlikte belirleyelim; gerektiğinde yerinde inceleyip ölçü alalım.',
+  },
+  {
+    baslik: 'Teklifinizi alın',
+    metin: 'Malzemeyi, işçiliği ve süreyi açıkça gösteren teklifimizi size iletelim.',
+  },
+  {
+    baslik: 'Üretim ve montaj',
+    metin: 'Atölyemizde üretip sahada monte edelim; işi teslim edene kadar yanınızdayız.',
+  },
+];
+---
+
+<section class="section" aria-labelledby="surec-baslik">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Nasıl çalışıyoruz</p>
+      <h2 id="surec-baslik">Teklif almak çok kolay</h2>
+    </div>
+
+    <ol class="adimlar" role="list">
+      {
+        adimlar.map((a, i) => (
+          <li class="adim">
+            <span class="adim__no" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <h3>{a.baslik}</h3>
+            <p>{a.metin}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .adimlar {
+    display: grid;
+    gap: 2.5rem 2rem;
+  }
+  @media (min-width: 640px) {
+    .adimlar {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .adimlar {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .adim {
+    position: relative;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--steel-100);
+  }
+  .adim::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 0;
+    width: 3rem;
+    height: 2px;
+    background: var(--spark);
+  }
+  .adim__no {
+    display: block;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 3.25rem;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--steel-300);
+  }
+  h3 {
+    margin-top: 1rem;
+    font-size: 1.6rem;
+  }
+  p {
+    margin-top: 0.6rem;
+    color: var(--steel-500);
+  }
+
+  /* Telefonda numara başlığın solunda dursun, adımlar daha az yer kaplasın */
+  @media (max-width: 639px) {
+    .adim {
+      display: grid;
+      grid-template-columns: 3.5rem 1fr;
+      column-gap: 0.75rem;
+      padding-top: 1.25rem;
+    }
+    .adim__no {
+      grid-row: span 2;
+      font-size: 2.6rem;
+    }
+    h3 {
+      margin-top: 0.15rem;
+    }
+  }
+</style>

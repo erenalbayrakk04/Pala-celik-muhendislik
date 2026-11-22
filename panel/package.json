@@ -1,0 +1,28 @@
+{
+  "name": "pala-panel",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Pala Çelik & Mühendislik — içerik yönetim paneli (Sanity Studio)",
+  "type": "module",
+  "scripts": {
+    "dev": "sanity dev",
+    "start": "sanity start",
+    "build": "sanity build",
+    "deploy": "sanity deploy",
+    "kontrol": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sanity/icons": "^5.4.0",
+    "@sanity/locale-tr-tr": "^1.2.38",
+    "@sanity/vision": "^6.24.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "sanity": "^6.24.0",
+    "styled-components": "^6.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "typescript": "~6.0"
+  }
+}

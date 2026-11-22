@@ -1,0 +1,260 @@
+---
+// /hizmetler/<adres>: tek bir hizmetin sayfası. Panelde her hizmet için otomatik oluşur;
+// abin yeni bölüm ekleyince bir sonraki yayında bu sayfa da kendiliğinden gelir.
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SayfaBasligi from '../../components/SayfaBasligi.astro';
+import SanityResim from '../../components/SanityResim.astro';
+import ZenginMetin from '../../components/ZenginMetin.astro';
+import HizmetIkonu from '../../components/HizmetIkonu.astro';
+import IsKarti from '../../components/IsKarti.astro';
+import Ikon from '../../components/Ikon.astro';
+import TeklifBandi from '../../components/TeklifBandi.astro';
+import { hizmetler, hizmetinIsleri, type Hizmet } from '../../lib/icerik';
+import { firma, whatsappLink } from '../../data/site';
+
+export const getStaticPaths = (() =>
+  hizmetler.map((hizmet) => ({ params: { slug: hizmet.slug }, props: { hizmet } }))) satisfies GetStaticPaths;
+
+interface Props {
+  hizmet: Hizmet;
+}
+
+const { hizmet } = Astro.props;
+const isler = hizmetinIsleri(hizmet.slug);
+const digerleri = hizmetler.filter((h) => h.slug !== hizmet.slug);
+const mesaj = `Merhaba, web sitenizden ulaşıyorum. ${hizmet.baslik} için teklif almak istiyorum.`;
+---
+
+<BaseLayout baslik={`${hizmet.baslik} | ${firma.ad}`} aciklama={hizmet.ozet}>
+  <SayfaBasligi
+    ust="Hizmetlerimiz"
+    baslik={hizmet.baslik}
+    aciklama={hizmet.ozet}
+    yol={[{ ad: 'Hizmetlerimiz', link: '/hizmetler' }]}
+  >
+    <a class="btn btn--primary" href={whatsappLink(mesaj)} target="_blank" rel="noopener">
+      <Ikon ad="whatsapp" />Bu hizmet için teklif al
+    </a>
+    <a class="btn btn--ghost" href={firma.telefonLink}><Ikon ad="phone" />{firma.telefon}</a>
+  </SayfaBasligi>
+
+  <section class="section">
+    <div class="container duzen">
+      <article class="icerik">
+        {
+          hizmet.kapak && (
+            <SanityResim
+              class="kapak"
+              gorsel={hizmet.kapak}
+              alt={hizmet.baslik}
+              genislik={1200}
+              oran={16 / 9}
+              sizes="(max-width: 1023px) 100vw, 760px"
+              loading="eager"
+            />
+          )
+        }
+        {
+          hizmet.aciklama?.length ? (
+            <ZenginMetin deger={hizmet.aciklama} />
+          ) : (
+            <p class="bos">{hizmet.ozet}</p>
+          )
+        }
+      </article>
+
+      <aside class="yan">
+        <div class="kutu kutu--koyu">
+          <h2>Teklif almak ister misiniz?</h2>
+          <p>Ne yaptırmak istediğinizi yazın; varsa fotoğraf ya da ölçü ekleyin.</p>
+          <a class="btn btn--primary" href={whatsappLink(mesaj)} target="_blank" rel="noopener">
+            <Ikon ad="whatsapp" />WhatsApp'tan yazın
+          </a>
+          <a class="kutu__tel" href={firma.telefonLink}><Ikon ad="phone" />{firma.telefon}</a>
+        </div>
+
+        {
+          digerleri.length > 0 && (
+            <nav class="kutu" aria-labelledby="diger-hizmetler">
+              <h2 id="diger-hizmetler">Diğer hizmetlerimiz</h2>
+              <ul role="list" class="diger">
+                {digerleri.map((h) => (
+                  <li>
+                    <a href={`/hizmetler/${h.slug}`}>
+                      <span class="diger__ikon">
+                        <HizmetIkonu ad={h.ikon} />
+                      </span>
+                      {h.baslik}
+                      <Ikon ad="arrow-right" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )
+        }
+      </aside>
+    </div>
+  </section>
+
+  {
+    isler.length > 0 && (
+      <section class="section section--paper" aria-labelledby="hizmet-isleri">
+        <div class="container">
+          <div class="isler-ust">
+            <div class="section-head">
+              <p class="eyebrow">Yapılan İşler</p>
+              <h2 id="hizmet-isleri">{hizmet.baslik} işlerimiz</h2>
+            </div>
+            {isler.length > 8 && (
+              <a class="btn btn--outline" href={`/yapilan-isler?bolum=${hizmet.slug}`}>
+                Hepsini gör ({isler.length}) <Ikon ad="arrow-right" />
+              </a>
+            )}
+          </div>
+          <ul class="isler" role="list">
+            {isler.slice(0, 8).map((is) => (
+              <li>
+                <IsKarti is={is} bolumGoster={false} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <TeklifBandi baslik={`${hizmet.baslik} için teklif alın`} mesaj={mesaj} />
+</BaseLayout>
+
+<style>
+  .duzen {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4rem);
+  }
+  @media (min-width: 1024px) {
+    .duzen {
+      grid-template-columns: minmax(0, 1fr) 22rem;
+      align-items: start;
+    }
+    .yan {
+      position: sticky;
+      top: calc(var(--header-h) + 1.5rem);
+    }
+  }
+
+  .icerik {
+    display: grid;
+    gap: 2rem;
+    max-width: 47.5rem;
+  }
+  .icerik :global(.kapak) {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+  }
+  .bos {
+    font-size: 1.2rem;
+    color: var(--steel-700);
+  }
+
+  .yan {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .kutu {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1.5rem;
+    border: 1px solid var(--steel-100);
+    border-radius: var(--radius);
+    background: var(--white);
+  }
+  .kutu h2 {
+    font-size: 1.6rem;
+  }
+  .kutu p {
+    color: var(--steel-500);
+  }
+  .kutu--koyu {
+    border-color: transparent;
+    background: var(--ink);
+    color: var(--white);
+  }
+  .kutu--koyu p {
+    color: var(--steel-300);
+  }
+  .kutu__tel {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 600;
+  }
+  .kutu__tel :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+    color: var(--spark);
+  }
+
+  .diger li + li {
+    border-top: 1px solid var(--steel-100);
+  }
+  .diger a {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.7rem 0;
+    font-weight: 600;
+  }
+  .diger a > :global(svg) {
+    width: 1rem;
+    height: 1rem;
+    color: var(--steel-500);
+    transition: transform 0.2s;
+  }
+  .diger a:hover {
+    color: var(--spark-ink);
+  }
+  .diger a:hover > :global(svg) {
+    transform: translateX(3px);
+    color: var(--spark-ink);
+  }
+  .diger__ikon {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 8px;
+    background: rgb(255 107 26 / 0.1);
+    color: var(--spark-ink);
+  }
+  .diger__ikon :global(svg) {
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+
+  .isler-ust {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0 2rem;
+  }
+  .isler-ust .btn {
+    margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+  }
+  .isler {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (min-width: 768px) {
+    .isler {
+      gap: 1.25rem;
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

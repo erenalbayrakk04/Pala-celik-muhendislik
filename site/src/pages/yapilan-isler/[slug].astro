@@ -1,0 +1,223 @@
+---
+// /yapilan-isler/<adres>: tek bir işin sayfası (fotoğraflar, bölüm, konum, tarih, video).
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SayfaBasligi from '../../components/SayfaBasligi.astro';
+import SanityResim from '../../components/SanityResim.astro';
+import IsKarti from '../../components/IsKarti.astro';
+import Ikon from '../../components/Ikon.astro';
+import TeklifBandi from '../../components/TeklifBandi.astro';
+import { isler, tarihYaz, type YapilanIs } from '../../lib/icerik';
+import { firma, whatsappLink } from '../../data/site';
+
+export const getStaticPaths = (() =>
+  isler.map((is) => ({ params: { slug: is.slug }, props: { is } }))) satisfies GetStaticPaths;
+
+interface Props {
+  is: YapilanIs;
+}
+
+const { is } = Astro.props;
+const fotograflar = [is.kapak, ...(is.galeri ?? [])].filter((g) => g?.asset) as NonNullable<YapilanIs['kapak']>[];
+
+// Aynı bölümden diğer işler; yoksa en yeni diğer işler
+const ayniBolum = isler.filter((x) => x.slug !== is.slug && x.hizmet?.slug === is.hizmet?.slug);
+const benzerler = (ayniBolum.length ? ayniBolum : isler.filter((x) => x.slug !== is.slug)).slice(0, 4);
+
+const mesaj = `Merhaba, sitenizde "${is.baslik}" işini gördüm. Benzer bir iş için teklif almak istiyorum.`;
+const videoInstagram = is.video?.includes('instagram.com');
+const aciklama =
+  is.aciklama?.trim() ||
+  [is.hizmet?.baslik, is.konum].filter(Boolean).join(' · ') ||
+  `${firma.ad} tarafından yapılan işlerden: ${is.baslik}.`;
+---
+
+<BaseLayout baslik={`${is.baslik} | ${firma.ad}`} aciklama={aciklama}>
+  <SayfaBasligi
+    ust={is.hizmet?.baslik}
+    baslik={is.baslik}
+    yol={[{ ad: 'Yapılan İşler', link: '/yapilan-isler' }]}
+  />
+
+  <section class="section">
+    <div class="container duzen">
+      <div class="fotograflar">
+        {
+          fotograflar.map((g, i) => (
+            <SanityResim
+              gorsel={g}
+              alt={i === 0 ? is.baslik : `${is.baslik} – fotoğraf ${i + 1}`}
+              genislik={1200}
+              sizes="(max-width: 1023px) 100vw, 760px"
+              loading={i === 0 ? 'eager' : 'lazy'}
+            />
+          ))
+        }
+      </div>
+
+      <aside class="bilgi">
+        <dl>
+          {
+            is.hizmet && (
+              <div>
+                <dt>Bölüm</dt>
+                <dd>
+                  <a href={`/hizmetler/${is.hizmet.slug}`}>{is.hizmet.baslik}</a>
+                </dd>
+              </div>
+            )
+          }
+          {
+            is.konum && (
+              <div>
+                <dt>Konum</dt>
+                <dd>{is.konum}</dd>
+              </div>
+            )
+          }
+          {
+            is.tarih && (
+              <div>
+                <dt>Tarih</dt>
+                <dd>
+                  <time datetime={is.tarih}>{tarihYaz(is.tarih)}</time>
+                </dd>
+              </div>
+            )
+          }
+        </dl>
+
+        {is.aciklama && <p class="aciklama">{is.aciklama}</p>}
+
+        <div class="butonlar">
+          {
+            is.video && (
+              <a class="btn btn--outline" href={is.video} target="_blank" rel="noopener">
+                <Ikon ad={videoInstagram ? 'instagram' : 'play'} />
+                Videoyu izle
+              </a>
+            )
+          }
+          <a class="btn btn--primary" href={whatsappLink(mesaj)} target="_blank" rel="noopener">
+            <Ikon ad="whatsapp" />Benzeri için teklif al
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  {
+    benzerler.length > 0 && (
+      <section class="section section--paper" aria-labelledby="diger-isler">
+        <div class="container">
+          <div class="section-head">
+            <p class="eyebrow">Yapılan İşler</p>
+            <h2 id="diger-isler">Diğer işlerimiz</h2>
+          </div>
+          <ul class="isler" role="list">
+            {benzerler.map((x) => (
+              <li>
+                <IsKarti is={x} bolumGoster={ayniBolum.length === 0} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <TeklifBandi mesaj={mesaj} />
+</BaseLayout>
+
+<style>
+  .duzen {
+    display: grid;
+    gap: clamp(2rem, 5vw, 3.5rem);
+  }
+  @media (min-width: 1024px) {
+    .duzen {
+      grid-template-columns: minmax(0, 1fr) 22rem;
+      align-items: start;
+    }
+    .bilgi {
+      position: sticky;
+      top: calc(var(--header-h) + 1.5rem);
+      order: 2;
+    }
+  }
+  /* Telefonda bilgiler fotoğrafların üstünde */
+  @media (max-width: 1023px) {
+    .bilgi {
+      order: -1;
+    }
+  }
+
+  .fotograflar {
+    display: grid;
+    gap: 1rem;
+    max-width: 47.5rem;
+  }
+  .fotograflar :global(img) {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    background: var(--paper);
+  }
+
+  .bilgi {
+    display: grid;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    border: 1px solid var(--steel-100);
+    border-radius: var(--radius);
+  }
+  dl {
+    display: grid;
+    gap: 0.9rem;
+    margin: 0;
+  }
+  dl div {
+    display: grid;
+    gap: 0.1rem;
+  }
+  dt {
+    font-family: var(--font-head);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--steel-500);
+  }
+  dd {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  dd a {
+    color: var(--spark-ink);
+  }
+  dd a:hover {
+    text-decoration: underline;
+  }
+  .aciklama {
+    color: var(--steel-700);
+    white-space: pre-line;
+  }
+  .butonlar {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .isler {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (min-width: 768px) {
+    .isler {
+      gap: 1.25rem;
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

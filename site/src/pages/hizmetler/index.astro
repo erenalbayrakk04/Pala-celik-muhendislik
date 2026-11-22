@@ -1,0 +1,48 @@
+---
+// /hizmetler: bütün hizmet bölümleri (panelde "Hizmetler (Bölümler)" sırasıyla).
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SayfaBasligi from '../../components/SayfaBasligi.astro';
+import HizmetKarti from '../../components/HizmetKarti.astro';
+import Surec from '../../components/anasayfa/Surec.astro';
+import TeklifBandi from '../../components/TeklifBandi.astro';
+import { hizmetler } from '../../lib/icerik';
+import { firma } from '../../data/site';
+---
+
+<BaseLayout
+  baslik={`Hizmetlerimiz | ${firma.ad}`}
+  aciklama={`${hizmetler.map((h) => h.baslik).join(', ')}. Sarıyer, İstanbul.`}
+>
+  <SayfaBasligi
+    ust="Hizmetlerimiz"
+    baslik="Çatıdan duvara, atölyeden şantiyeye"
+    aciklama="Konuttan fabrikaya her ölçekte çelik işinde; projeyi birlikte planlıyor, atölyemizde üretiyor ve yerinde uyguluyoruz."
+    sayfaAdi="Hizmetlerimiz"
+  />
+
+  <section class="section section--paper">
+    <div class="container">
+      <h2 class="sr-only">Hizmet listesi</h2>
+      <ul class="liste" role="list">
+        {
+          hizmetler.map((h, i) => (
+            <li>
+              <HizmetKarti hizmet={h} sira={i + 1} />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <Surec />
+  <TeklifBandi />
+</BaseLayout>
+
+<style>
+  .liste {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 16.5rem), 1fr));
+  }
+</style>

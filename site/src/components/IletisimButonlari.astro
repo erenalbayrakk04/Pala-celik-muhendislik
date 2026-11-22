@@ -1,0 +1,109 @@
+---
+// Her sayfanın sağ altında duran yuvarlak iletişim butonları: Instagram, telefon ve WhatsApp.
+// Bilgisayarda butonun üzerine gelince yanında küçük bir yazı çıkar.
+import Ikon from './Ikon.astro';
+import { firma, whatsappLink } from '../data/site';
+
+const butonlar = [
+  { ikon: 'instagram', yazi: `Instagram: @${firma.instagram.kullanici}`, link: firma.instagram.link, yeniSekme: true, tur: 'instagram' },
+  { ikon: 'phone', yazi: `Ara: ${firma.telefon}`, link: firma.telefonLink, yeniSekme: false, tur: 'telefon' },
+  { ikon: 'whatsapp', yazi: "WhatsApp'tan yazın", link: whatsappLink(), yeniSekme: true, tur: 'whatsapp' },
+] as const;
+---
+
+<div class="iletisim">
+  {
+    butonlar.map((b) => (
+      <a
+        class={`iletisim__buton iletisim__buton--${b.tur}`}
+        href={b.link}
+        target={b.yeniSekme ? '_blank' : undefined}
+        rel={b.yeniSekme ? 'noopener' : undefined}
+        aria-label={b.yazi}
+      >
+        <Ikon ad={b.ikon} />
+        <span class="iletisim__yazi" aria-hidden="true">
+          {b.yazi}
+        </span>
+      </a>
+    ))
+  }
+</div>
+
+<style>
+  .iletisim {
+    position: fixed;
+    right: 1.1rem;
+    bottom: 1.1rem;
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  .iletisim__buton {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    color: var(--white);
+    box-shadow: 0 10px 25px -8px rgb(0 0 0 / 0.45);
+    transition: transform 0.2s;
+  }
+  .iletisim__buton:hover {
+    transform: scale(1.08);
+  }
+  .iletisim__buton :global(svg) {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+
+  .iletisim__buton--instagram {
+    background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
+  }
+  .iletisim__buton--telefon {
+    background: var(--spark);
+    color: var(--ink);
+  }
+  .iletisim__buton--whatsapp {
+    width: 3.6rem;
+    height: 3.6rem;
+    background: var(--whatsapp);
+  }
+  .iletisim__buton--whatsapp :global(svg) {
+    width: 1.9rem;
+    height: 1.9rem;
+  }
+
+  /* Bilgisayarda üzerine gelince sol tarafta çıkan yazı */
+  .iletisim__yazi {
+    position: absolute;
+    right: calc(100% + 0.75rem);
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    background: var(--ink);
+    color: var(--white);
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  @media (hover: hover) {
+    .iletisim__buton:hover .iletisim__yazi,
+    .iletisim__buton:focus-visible .iletisim__yazi {
+      opacity: 1;
+    }
+  }
+
+  /* Telefonda menü açıkken gizle (menüde zaten "Teklif Al" butonu var) */
+  :global(body.menu-acik) .iletisim {
+    display: none;
+  }
+</style>

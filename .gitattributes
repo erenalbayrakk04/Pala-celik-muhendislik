@@ -1,0 +1,11 @@
+# Satır sonları depoda hep LF olsun (Windows'ta düzenlense de Cloudflare'in Linux sunucusunda sorun çıkmasın)
+* text=auto eol=lf
+
+# İkili dosyalar
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary

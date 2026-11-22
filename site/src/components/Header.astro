@@ -1,0 +1,211 @@
+---
+// Üst menü. Telefonda menü sağdaki butonla açılıp kapanır.
+import Logo from '../assets/logo/pala-logo.svg';
+import Ikon from './Ikon.astro';
+import { firma, menu, sayfaYolu, whatsappLink } from '../data/site';
+
+const suankiSayfa = sayfaYolu(Astro.url);
+const aktifMi = (link: string) => (link === '/' ? suankiSayfa === '/' : suankiSayfa === link || suankiSayfa.startsWith(`${link}/`));
+---
+
+<header class="header">
+  <div class="container header__ic">
+    <a href="/" class="header__logo" aria-label={`${firma.ad} – Anasayfa`}>
+      <Logo aria-hidden="true" />
+    </a>
+
+    <button class="header__buton" type="button" aria-expanded="false" aria-controls="ana-menu" data-menu-buton>
+      <span class="sr-only">Menüyü aç / kapat</span>
+      <Ikon ad="menu" class="ikon-ac" />
+      <Ikon ad="x" class="ikon-kapat" />
+    </button>
+
+    <nav id="ana-menu" class="header__menu" aria-label="Ana menü" data-menu>
+      <ul role="list">
+        {
+          menu.map((m) => (
+            <li>
+              <a href={m.link} aria-current={aktifMi(m.link) ? 'page' : undefined}>
+                {m.ad}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="header__eylemler">
+        <a class="header__tel" href={firma.telefonLink}><Ikon ad="phone" />{firma.telefon}</a>
+        <a class="btn btn--primary header__teklif" href={whatsappLink()} target="_blank" rel="noopener">
+          <Ikon ad="whatsapp" />Teklif Al
+        </a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  // Telefonda menüyü aç / kapat
+  const buton = document.querySelector<HTMLButtonElement>('[data-menu-buton]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+
+  buton?.addEventListener('click', () => {
+    const acik = buton.getAttribute('aria-expanded') === 'true';
+    buton.setAttribute('aria-expanded', String(!acik));
+    menu?.toggleAttribute('data-acik', !acik);
+    document.body.classList.toggle('menu-acik', !acik);
+  });
+</script>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--ink);
+    color: var(--white);
+    border-bottom: 1px solid rgb(255 255 255 / 0.08);
+  }
+  .header__ic {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    height: var(--header-h);
+  }
+  .header__logo :global(svg) {
+    height: 50px;
+    width: auto;
+  }
+
+  /* Telefon menü butonu */
+  .header__buton {
+    display: grid;
+    place-items: center;
+    width: 2.9rem;
+    height: 2.9rem;
+    padding: 0;
+    border: 1px solid rgb(255 255 255 / 0.2);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--white);
+    cursor: pointer;
+  }
+  .header__buton :global(.ikon-kapat),
+  .header__buton[aria-expanded='true'] :global(.ikon-ac) {
+    display: none;
+  }
+  .header__buton[aria-expanded='true'] :global(.ikon-kapat) {
+    display: block;
+  }
+
+  /* Menü: telefonda tam ekran açılır panel */
+  .header__menu {
+    display: none;
+  }
+  .header__menu[data-acik] {
+    position: fixed;
+    inset: var(--header-h) 0 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 1.5rem 1.25rem 2rem;
+    background: var(--ink);
+    overflow-y: auto;
+  }
+  .header__menu ul {
+    display: grid;
+  }
+  .header__menu li a {
+    display: block;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid rgb(255 255 255 / 0.08);
+    font-family: var(--font-head);
+    font-size: 1.6rem;
+    font-weight: 600;
+  }
+  .header__menu a[aria-current='page'] {
+    color: var(--spark);
+  }
+  .header__eylemler {
+    display: grid;
+    gap: 1rem;
+  }
+  .header__tel {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--steel-300);
+  }
+  .header__tel :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+    color: var(--spark);
+  }
+
+  /* Geniş ekran: menü yan yana */
+  @media (min-width: 1024px) {
+    .header__buton {
+      display: none;
+    }
+    .header__menu,
+    .header__menu[data-acik] {
+      position: static;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 2.25rem;
+      padding: 0;
+      background: none;
+      overflow: visible;
+    }
+    .header__menu ul {
+      display: flex;
+      gap: 1.75rem;
+    }
+    .header__menu li a {
+      position: relative;
+      padding: 0.4rem 0;
+      border: 0;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--steel-300);
+      transition: color 0.2s;
+    }
+    .header__menu li a:hover,
+    .header__menu li a[aria-current='page'] {
+      color: var(--white);
+    }
+    .header__menu li a[aria-current='page']::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -0.35rem;
+      height: 2px;
+      background: var(--spark);
+    }
+    .header__eylemler {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .header__tel {
+      display: none;
+    }
+    .header__teklif {
+      min-height: 2.75rem;
+      padding: 0.6rem 1.1rem;
+      font-size: 1.05rem;
+    }
+  }
+  @media (min-width: 1200px) {
+    .header__tel {
+      display: inline-flex;
+    }
+  }
+
+  :global(body.menu-acik) {
+    overflow: hidden;
+  }
+</style>

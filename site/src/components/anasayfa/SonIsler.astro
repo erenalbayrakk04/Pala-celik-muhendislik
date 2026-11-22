@@ -1,0 +1,74 @@
+---
+// Anasayfadaki "Son işlerimiz" bölümü: panelde "Anasayfada göster" açık olan en yeni 6 iş.
+// Hiç iş yoksa bu bölüm görünmez.
+import IsKarti from '../IsKarti.astro';
+import Ikon from '../Ikon.astro';
+import { isler } from '../../lib/icerik';
+import { firma } from '../../data/site';
+
+const gosterilecek = isler.filter((is) => is.anasayfa !== false).slice(0, 6);
+---
+
+{
+  gosterilecek.length > 0 && (
+    <section class="section section--dark" aria-labelledby="son-isler-baslik">
+      <div class="container">
+        <div class="ust">
+          <div class="section-head">
+            <p class="eyebrow">Yapılan İşler</p>
+            <h2 id="son-isler-baslik">Son işlerimizden kareler</h2>
+            <p>Atölyemizde ürettiğimiz ve sahada uyguladığımız işlerden bazıları.</p>
+          </div>
+          <div class="ust__butonlar">
+            <a class="btn btn--primary" href="/yapilan-isler">
+              Tüm işler <Ikon ad="arrow-right" />
+            </a>
+            <a class="btn btn--ghost" href={firma.instagram.link} target="_blank" rel="noopener">
+              <Ikon ad="instagram" />@{firma.instagram.kullanici}
+            </a>
+          </div>
+        </div>
+
+        <ul class="galeri" role="list">
+          {gosterilecek.map((is) => (
+            <li>
+              <IsKarti is={is} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .ust {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0 2rem;
+    margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+  }
+  .ust .section-head {
+    margin-bottom: 1.5rem;
+  }
+  .ust__butonlar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .galeri {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (min-width: 768px) {
+    .galeri {
+      gap: 1.25rem;
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

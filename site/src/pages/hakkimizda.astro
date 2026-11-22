@@ -1,0 +1,113 @@
+---
+// /hakkimizda: yazısı panelin "Hakkımızda" bölümünden gelir.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SayfaBasligi from '../components/SayfaBasligi.astro';
+import SanityResim from '../components/SanityResim.astro';
+import ZenginMetin from '../components/ZenginMetin.astro';
+import Ikon from '../components/Ikon.astro';
+import SonIsler from '../components/anasayfa/SonIsler.astro';
+import TeklifBandi from '../components/TeklifBandi.astro';
+import { hakkimizda, hizmetler } from '../lib/icerik';
+import { firma } from '../data/site';
+
+const baslik = hakkimizda?.baslik?.trim() || 'Hakkımızda';
+---
+
+<BaseLayout baslik={`${baslik} | ${firma.ad}`} aciklama={firma.tanitim}>
+  <SayfaBasligi ust={firma.ad} baslik={baslik} aciklama={firma.tanitim} />
+
+  <section class="section">
+    <div class="container duzen">
+      <div class="metin">
+        {
+          hakkimizda?.gorsel && (
+            <SanityResim
+              class="gorsel"
+              gorsel={hakkimizda.gorsel}
+              alt={firma.ad}
+              genislik={1200}
+              oran={16 / 9}
+              sizes="(max-width: 1023px) 100vw, 760px"
+              loading="eager"
+            />
+          )
+        }
+        <ZenginMetin deger={hakkimizda?.icerik} />
+      </div>
+
+      <aside class="kart">
+        <h2>Neler yapıyoruz?</h2>
+        <ul role="list">
+          {
+            hizmetler.map((h) => (
+              <li>
+                <a href={`/hizmetler/${h.slug}`}>
+                  <Ikon ad="check" />
+                  {h.baslik}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <a class="btn btn--primary" href="/iletisim">Bize ulaşın <Ikon ad="arrow-right" /></a>
+      </aside>
+    </div>
+  </section>
+
+  <SonIsler />
+  <TeklifBandi />
+</BaseLayout>
+
+<style>
+  .duzen {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4rem);
+  }
+  @media (min-width: 1024px) {
+    .duzen {
+      grid-template-columns: minmax(0, 1fr) 22rem;
+      align-items: start;
+    }
+  }
+  .metin {
+    display: grid;
+    gap: 2rem;
+    max-width: 47.5rem;
+  }
+  .metin :global(.gorsel) {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+  }
+
+  .kart {
+    display: grid;
+    gap: 1.1rem;
+    padding: 1.75rem 1.5rem;
+    border-radius: var(--radius);
+    background: var(--ink);
+    color: var(--white);
+  }
+  .kart h2 {
+    font-size: 1.6rem;
+  }
+  .kart ul {
+    display: grid;
+    gap: 0.55rem;
+  }
+  .kart li a {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--steel-200);
+  }
+  .kart li a:hover {
+    color: var(--white);
+  }
+  .kart li :global(svg) {
+    flex: none;
+    width: 1.1rem;
+    height: 1.1rem;
+    color: var(--spark);
+  }
+</style>

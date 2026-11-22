@@ -1,0 +1,77 @@
+---
+// Hizmet kartlarındaki çizim ikonlar (48x48 ızgarada elle çizildi).
+// Rengi yazı renginden (currentColor), boyutu CSS'ten alır.
+import type { IkonAdi } from '../lib/icerik';
+
+const cizimler: Record<IkonAdi, string> = {
+  // Çatı makası (kafes kiriş) ve iki kolon
+  'celik-cati': `
+    <path d="M4 32 24 12l20 20Z"/>
+    <path d="M24 12v20M14 22l10 10 10-10M14 22v10M34 22v10"/>
+    <path d="M7 32v12M41 32v12"/>`,
+  // Uzay çatı: üst ve alt başlık, aradaki çubuklar ve küresel düğümler
+  'uzay-cati': `
+    <path d="M6 16h36M12 32h24"/>
+    <path d="m6 16 6 16 6-16 6 16 6-16 6 16 6-16"/>
+    <g fill="currentColor" stroke="none">
+      <circle cx="6" cy="16" r="2.6"/><circle cx="18" cy="16" r="2.6"/><circle cx="30" cy="16" r="2.6"/><circle cx="42" cy="16" r="2.6"/>
+      <circle cx="12" cy="32" r="2.6"/><circle cx="24" cy="32" r="2.6"/><circle cx="36" cy="32" r="2.6"/>
+    </g>`,
+  // Çelik iskeletli ev
+  'celik-ev': `
+    <path d="M5 22 24 7l19 15"/>
+    <path d="M9 19v23h30V19"/>
+    <path d="M9 28h30M28 42v-9h6v9"/>
+    <path d="m12.5 31.5 8 8M20.5 31.5l-8 8"/>`,
+  // Asma tavan: tavan, askılar, panel ızgarası ve spot ışık
+  'asma-tavan': `
+    <path d="M4 8h40"/>
+    <path d="M12 8v10M24 8v10M36 8v10"/>
+    <path d="M4 18h40M4 26h40M4 18v8M17 18v8M31 18v8M44 18v8"/>
+    <path d="M24 30v5M17 29.5l-3 3M31 29.5l3 3"/>`,
+  // Bölme duvar: tavan, zemin ve çelik dikmeler
+  'bolme-duvar': `
+    <path d="M4 6h40M4 42h40"/>
+    <path d="M10 6v36M19 6v36M29 6v36M38 6v36"/>
+    <path d="M10 24h28"/>`,
+  // I profil kesiti ve kaynak kıvılcımları
+  'celik-imalat': `
+    <path d="M8 8h26v6H24v20h10v6H8v-6h10V14H8Z"/>
+    <path d="m39 9 4-4M40 15h5M39 21l4 4"/>`,
+  // Kule vinç
+  santiye: `
+    <path d="M6 44h18"/>
+    <path d="M12 44V12M18 44V12"/>
+    <path d="m12 44 6-6-6-6 6-6-6-6 6-6"/>
+    <path d="M4 12h40"/>
+    <path d="M15 4v8M15 4 5 12M15 4l29 8"/>
+    <path d="M36 12v10M32 22h8v6h-8Z"/>
+    <path d="M5 12v5h6v-5"/>`,
+  // Makaralı film kamerası ve sehpa
+  'film-ekipmani': `
+    <circle cx="14" cy="10" r="5"/>
+    <circle cx="26" cy="10" r="5"/>
+    <rect x="8" y="16" width="24" height="13" rx="2"/>
+    <path d="m32 20 10-5v15l-10-5"/>
+    <path d="M20 29v6M20 35l-8 9M20 35l8 9M20 35v9"/>`,
+};
+
+interface Props {
+  ad: IkonAdi;
+}
+
+const { ad } = Astro.props;
+---
+
+<svg
+  viewBox="0 0 48 48"
+  width="48"
+  height="48"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  set:html={cizimler[ad]}
+/>

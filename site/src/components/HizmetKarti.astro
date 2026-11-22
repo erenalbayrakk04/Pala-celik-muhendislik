@@ -1,0 +1,132 @@
+---
+// Tek bir hizmet kartı (anasayfadaki "Hizmetlerimiz" listesinde kullanılıyor).
+import HizmetIkonu from './HizmetIkonu.astro';
+import Ikon from './Ikon.astro';
+import type { Hizmet } from '../lib/icerik';
+
+interface Props {
+  hizmet: Hizmet;
+  sira: number;
+}
+
+const { hizmet, sira } = Astro.props;
+---
+
+<a class="kart" href={`/hizmetler/${hizmet.slug}`}>
+  <span class="kart__sira" aria-hidden="true">{String(sira).padStart(2, '0')}</span>
+  <span class="kart__ikon"><HizmetIkonu ad={hizmet.ikon} /></span>
+  <h3>{hizmet.baslik}</h3>
+  <p>{hizmet.ozet}</p>
+  <span class="kart__link"><span class="kart__link-yazi">Detaylı bilgi</span> <Ikon ad="arrow-right" /></span>
+</a>
+
+<style>
+  .kart {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    height: 100%;
+    padding: 1.75rem 1.5rem 1.5rem;
+    background: var(--white);
+    border: 1px solid var(--steel-100);
+    border-radius: var(--radius);
+    transition:
+      transform 0.25s,
+      box-shadow 0.25s,
+      border-color 0.25s;
+  }
+  .kart:hover {
+    transform: translateY(-4px);
+    border-color: var(--spark);
+    box-shadow: 0 18px 40px -22px rgb(19 19 22 / 0.35);
+  }
+  .kart__sira {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.5rem;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--steel-200);
+  }
+  .kart__ikon {
+    display: grid;
+    place-items: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 10px;
+    background: rgb(255 107 26 / 0.1);
+    color: var(--spark-ink);
+  }
+  .kart__ikon :global(svg) {
+    width: 2.6rem;
+    height: 2.6rem;
+  }
+  h3 {
+    margin-top: 0.5rem;
+    font-size: 1.65rem;
+  }
+  p {
+    flex: 1;
+    color: var(--steel-500);
+    font-size: 1rem;
+  }
+  .kart__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+  }
+  .kart__link :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+    transition: transform 0.2s;
+  }
+  .kart:hover .kart__link :global(svg) {
+    transform: translateX(4px);
+  }
+
+  /* Telefonda kompakt görünüm: ikon solda, yazılar sağda */
+  @media (max-width: 639px) {
+    .kart {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      grid-template-areas:
+        'ikon baslik ok'
+        'ikon metin ok';
+      column-gap: 1rem;
+      row-gap: 0.3rem;
+      align-items: center;
+      padding: 1.1rem 1rem;
+    }
+    .kart__sira,
+    .kart__link-yazi {
+      display: none;
+    }
+    .kart__ikon {
+      grid-area: ikon;
+      align-self: start;
+      width: 3.25rem;
+      height: 3.25rem;
+    }
+    .kart__ikon :global(svg) {
+      width: 2.1rem;
+      height: 2.1rem;
+    }
+    h3 {
+      grid-area: baslik;
+      margin: 0;
+      font-size: 1.4rem;
+    }
+    p {
+      grid-area: metin;
+      font-size: 0.95rem;
+      line-height: 1.45;
+    }
+    .kart__link {
+      grid-area: ok;
+      color: var(--spark-ink);
+    }
+  }
+</style>

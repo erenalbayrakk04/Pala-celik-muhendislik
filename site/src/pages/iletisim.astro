@@ -1,0 +1,273 @@
+---
+// /iletisim: telefon, WhatsApp, e-posta, adres, Instagram ve harita.
+// Bilgiler panelin "Site Ayarları" bölümünden gelir.
+// Harita, ziyaretçi "Haritayı göster"e basınca yüklenir (Google çerezleri ancak o zaman gelir, sayfa da hızlı açılır).
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SayfaBasligi from '../components/SayfaBasligi.astro';
+import Ikon from '../components/Ikon.astro';
+import YerelIsletme from '../components/YerelIsletme.astro';
+import { firma, whatsappLink } from '../data/site';
+
+const adres = firma.adresSatirlari.join(', ');
+const haritaGomme = `https://maps.google.com/maps?q=${encodeURIComponent(`${firma.ad}, ${adres}`)}&z=16&output=embed`;
+
+const kartlar = [
+  {
+    ikon: 'whatsapp',
+    baslik: 'WhatsApp',
+    deger: firma.telefon,
+    eylem: 'Mesaj yazın',
+    link: whatsappLink(),
+    yeniSekme: true,
+    vurgu: true,
+  },
+  { ikon: 'phone', baslik: 'Telefon', deger: firma.telefon, eylem: 'Hemen arayın', link: firma.telefonLink },
+  { ikon: 'mail', baslik: 'E-posta', deger: firma.eposta, eylem: 'E-posta gönderin', link: `mailto:${firma.eposta}` },
+  {
+    ikon: 'instagram',
+    baslik: 'Instagram',
+    deger: `@${firma.instagram.kullanici}`,
+    eylem: 'Takip edin',
+    link: firma.instagram.link,
+    yeniSekme: true,
+  },
+] as const;
+---
+
+<BaseLayout
+  baslik={`İletişim | ${firma.ad}`}
+  aciklama={`${adres}. Telefon ve WhatsApp: ${firma.telefon}. Teklif ve keşif için bize ulaşın.`}
+>
+  <YerelIsletme slot="head" />
+
+  <SayfaBasligi
+    ust="İletişim"
+    baslik="Bize ulaşın"
+    aciklama="Teklif, keşif ya da aklınıza takılan her şey için arayın veya WhatsApp'tan yazın. Varsa fotoğraf ve ölçü eklemeniz işimizi hızlandırır."
+    sayfaAdi="İletişim"
+  />
+
+  <section class="section section--paper">
+    <div class="container">
+      <ul class="kartlar" role="list">
+        {
+          kartlar.map((k) => (
+            <li>
+              <a
+                class:list={['kart', { 'kart--vurgu': 'vurgu' in k && k.vurgu }]}
+                href={k.link}
+                target={'yeniSekme' in k && k.yeniSekme ? '_blank' : undefined}
+                rel={'yeniSekme' in k && k.yeniSekme ? 'noopener' : undefined}
+              >
+                <span class="kart__ikon">
+                  <Ikon ad={k.ikon} />
+                </span>
+                <span class="kart__baslik">{k.baslik}</span>
+                <span class="kart__deger">
+                  {/* E-posta sığmazsa "@" işaretinden sonra alt satıra geçsin */}
+                  {k.deger.includes('@') && !k.deger.startsWith('@')
+                    ? [k.deger.split('@')[0], '@', <wbr />, k.deger.split('@')[1]]
+                    : k.deger}
+                </span>
+                <span class="kart__eylem">
+                  {k.eylem} <Ikon ad="arrow-right" />
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="konum">
+        <div class="adres">
+          <h2>Adresimiz</h2>
+          <address>
+            <strong>{firma.ad}</strong>
+            {firma.adresSatirlari.map((satir) => <span>{satir}</span>)}
+          </address>
+          {
+            firma.yetkili && (
+              <p class="yetkili">
+                <Ikon ad="user" />
+                Yetkili: {firma.yetkili}
+              </p>
+            )
+          }
+          <a class="btn btn--dark" href={firma.haritaLinki} target="_blank" rel="noopener">
+            <Ikon ad="map-pin" />Yol tarifi al
+          </a>
+        </div>
+
+        <div class="harita" data-harita data-kaynak={haritaGomme}>
+          <div class="harita__kapak">
+            <Ikon ad="map-pin" />
+            <p>Harita Google Haritalar'dan yüklenecek.</p>
+            <button class="btn btn--primary" type="button" data-harita-buton>Haritayı göster</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-harita]').forEach((kutu) => {
+    kutu.querySelector('[data-harita-buton]')?.addEventListener('click', () => {
+      const iframe = document.createElement('iframe');
+      iframe.src = kutu.dataset.kaynak ?? '';
+      iframe.title = 'Haritada konumumuz';
+      iframe.loading = 'lazy';
+      iframe.referrerPolicy = 'no-referrer-when-downgrade';
+      kutu.replaceChildren(iframe);
+    });
+  });
+</script>
+
+<style>
+  .kartlar {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+  }
+  .kart {
+    display: grid;
+    align-content: start;
+    gap: 0.35rem;
+    height: 100%;
+    padding: 1.5rem;
+    border: 1px solid var(--steel-100);
+    border-radius: var(--radius);
+    background: var(--white);
+    transition:
+      transform 0.25s,
+      border-color 0.25s,
+      box-shadow 0.25s;
+  }
+  .kart:hover {
+    transform: translateY(-3px);
+    border-color: var(--spark);
+    box-shadow: 0 18px 40px -22px rgb(19 19 22 / 0.35);
+  }
+  .kart__ikon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 0.6rem;
+    border-radius: 10px;
+    background: rgb(255 107 26 / 0.1);
+    color: var(--spark-ink);
+  }
+  .kart__ikon :global(svg) {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  .kart--vurgu .kart__ikon {
+    background: var(--whatsapp);
+    color: var(--white);
+  }
+  .kart__baslik {
+    font-family: var(--font-head);
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--steel-500);
+  }
+  .kart__deger {
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+  .kart__eylem {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.5rem;
+    font-weight: 600;
+    color: var(--spark-ink);
+  }
+  .kart__eylem :global(svg) {
+    width: 1rem;
+    height: 1rem;
+    transition: transform 0.2s;
+  }
+  .kart:hover .kart__eylem :global(svg) {
+    transform: translateX(3px);
+  }
+
+  .konum {
+    display: grid;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--white);
+    border: 1px solid var(--steel-100);
+  }
+  @media (min-width: 900px) {
+    .konum {
+      grid-template-columns: 22rem 1fr;
+    }
+  }
+  .adres {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: 1.1rem;
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+  }
+  .adres h2 {
+    font-size: 2rem;
+  }
+  address {
+    display: grid;
+    gap: 0.15rem;
+    font-style: normal;
+    font-size: 1.1rem;
+    color: var(--steel-700);
+  }
+  address strong {
+    margin-bottom: 0.25rem;
+    color: var(--ink);
+  }
+  .yetkili {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--steel-700);
+  }
+  .yetkili :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+    color: var(--spark-ink);
+  }
+
+  .harita {
+    min-height: 22rem;
+    background: var(--ink);
+  }
+  .harita :global(iframe) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 22rem;
+    border: 0;
+  }
+  .harita__kapak {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 1rem;
+    height: 100%;
+    min-height: 22rem;
+    padding: 2rem;
+    text-align: center;
+    color: var(--steel-300);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='42' viewBox='0 0 48 42'%3E%3Cpath d='M0 .5h48M0 0l24 42L48 0' fill='none' stroke='%23ffffff' stroke-opacity='.07' stroke-width='1'/%3E%3C/svg%3E");
+    background-size: 48px 42px;
+  }
+  .harita__kapak > :global(svg) {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: var(--spark);
+  }
+</style>

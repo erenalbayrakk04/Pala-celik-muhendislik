@@ -1,0 +1,29 @@
+---
+// /kvkk: KVKK Aydınlatma Metni. Yazısı panelin "KVKK Aydınlatma Metni" bölümünden gelir.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SayfaBasligi from '../components/SayfaBasligi.astro';
+import ZenginMetin from '../components/ZenginMetin.astro';
+import { kvkk } from '../lib/icerik';
+import { firma } from '../data/site';
+
+const baslik = kvkk?.baslik?.trim() || 'KVKK Aydınlatma Metni';
+---
+
+<BaseLayout
+  baslik={`${baslik} | ${firma.ad}`}
+  aciklama={`${firma.ad} kişisel verilerin korunması ve işlenmesine ilişkin aydınlatma metni.`}
+>
+  <SayfaBasligi baslik={baslik} />
+
+  <section class="section">
+    <div class="container metin">
+      <ZenginMetin deger={kvkk?.icerik} />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .metin {
+    max-width: 47.5rem;
+  }
+</style>
