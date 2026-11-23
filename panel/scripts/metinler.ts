@@ -72,7 +72,7 @@ export const kvkkIcerigi = () => [
 
   h2('Verilerinizi nasıl topluyoruz?'),
   p(
-    'Bu sitede form bulunmaz. Verilerinizi; bizi telefonla aradığınızda, WhatsApp, Instagram veya e-posta ile yazdığınızda ya da yüz yüze görüştüğümüzde sözlü, yazılı veya elektronik olarak sizden alırız. İşi sizin adınıza takip eden biri (örneğin ustanız veya müteahhidiniz) bilgilerinizi bize iletebilir. Site ziyaret kayıtları ise siteyi açtığınızda barındırma altyapısı tarafından otomatik olarak oluşturulur.',
+    'Bu sitede form bulunmaz ve site üzerinden ödeme alınmaz; ödemeler elden veya banka aracılığıyla yapılır. Verilerinizi; bizi telefonla aradığınızda, WhatsApp, Instagram veya e-posta ile yazdığınızda ya da yüz yüze görüştüğümüzde sözlü, yazılı veya elektronik olarak sizden alırız. İşi sizin adınıza takip eden biri (örneğin ustanız veya müteahhidiniz) bilgilerinizi bize iletebilir. Site ziyaret kayıtları ise siteyi açtığınızda barındırma altyapısı tarafından otomatik olarak oluşturulur.',
   ),
 
   h2('Hangi amaçla ve hangi hukuki sebeple işliyoruz?'),
